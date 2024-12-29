@@ -26,7 +26,10 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
+        locale = handler_input.request_envelope.request.locale
         speak_output = "Welcome, you can say Hello or Help. Which would you like to try?"
+        if locale == "ja-JP":
+            speak_output = "ようこそ、こんにちはまたはヘルプと言ってみてください"
 
         return (
             handler_input.response_builder
@@ -44,7 +47,10 @@ class HelloWorldIntentHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
+        locale = handler_input.request_envelope.request.locale
         speak_output = "Hello Python World from Classes!"
+        if locale == "ja-JP":
+            speak_output = "こんにちはパイソンワールド、クラスより"
 
         return (
             handler_input.response_builder
