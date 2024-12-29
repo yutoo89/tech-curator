@@ -18,13 +18,10 @@
           "slots": [],
           "name": "HelloWorldIntent",
           "samples": [
-            "hello",
-            "how are you",
-            "say hi world",
-            "say hi",
-            "hi",
-            "say hello world",
-            "say hello"
+            "こんにちはと言って",
+            "はい",
+            "ご機嫌いかが",
+            "こんにちは"
           ]
         },
         {
