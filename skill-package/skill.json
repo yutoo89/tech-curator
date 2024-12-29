@@ -4,29 +4,53 @@
       "custom": {
         "endpoint": {
           "uri": "arn:aws:lambda:ap-northeast-1:288761741657:function:ask-trend-curator-default-default-1735471545351"
-        }
+        },
+        "interfaces": [],
+        "locales": {}
       }
     },
     "manifestVersion": "1.0",
+    "privacyAndCompliance": {
+      "locales": {
+        "ja-JP": {},
+        "en-US": {}
+      },
+      "shoppingKit": {
+        "isAmazonAssociatesOnAlexaEnabled": false,
+        "isShoppingActionsEnabled": false
+      }
+    },
     "publishingInformation": {
+      "automaticDistribution": {
+        "isActive": false
+      },
       "distributionCountries": [],
       "isAvailableWorldwide": true,
       "locales": {
         "en-US": {
           "description": "Sample Full Description",
           "examplePhrases": [
-            "Alexa open hello world",
+            "Alexa, open hello world",
             "hello",
             "help"
           ],
+          "keywords": [],
           "name": "trend-curator",
           "summary": "Sample Short Description"
         },
         "ja-JP": {
-          "name": "trend-curator"
+          "description": "Sample Full Description",
+          "examplePhrases": [
+            "アレクサ、hello worldを開いて",
+            "hello",
+            "help"
+          ],
+          "keywords": [],
+          "name": "trend-curator",
+          "summary": "Sample Short Description"
         }
       },
-      "testingInstructions": "Sample Testing Instructions."
+      "testingInstructions": "{\"ask_dist_username\":\"\",\"ask_dist_password\":\"\",\"ask_dist_testing_instructions\":\"Sample Testing Instructions.\"}"
     }
   }
 }
