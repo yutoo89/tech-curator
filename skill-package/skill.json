@@ -6,13 +6,7 @@
           "uri": "arn:aws:lambda:ap-northeast-1:288761741657:function:ask-trend-curator-default-default-1735471545351"
         },
         "interfaces": [],
-        "locales": {},
-        "tasks": [
-          {
-            "name": "PlayNews",
-            "version": "1"
-          }
-        ]
+        "locales": {}
       }
     },
     "manifestVersion": "1.0",
