@@ -13,9 +13,14 @@ import ask_sdk_core.utils as ask_utils
 from ask_sdk_core.handler_input import HandlerInput
 
 from ask_sdk_model import Response
+from openai import OpenAI
+import json
+import os
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for Skill Launch."""
@@ -29,7 +34,27 @@ class LaunchRequestHandler(AbstractRequestHandler):
         locale = handler_input.request_envelope.request.locale
         speak_output = "Welcome, you can say Hello or Help. Which would you like to try?"
         if locale == "ja-JP":
-            speak_output = "ようこそ、こんにちはまたはヘルプと言ってみてください"
+            speak_output = f"こんにちは、言語は{locale}に設定されています。"
+
+        logger.info(f"ユーザidは: {handler_input.request_envelope.session.user.user_id}")
+
+        client = OpenAI()
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            # response_format={"type": "json_object"},
+            messages=[
+                {
+                    "role": "system",
+                    "content": """
+                    20文字以内で適当な質問をしてください。
+                    """,
+                },
+                {"role": "user", "content": "こんにちは"},
+            ],
+        )
+        logger.info(dir(response))
+        text = response.choices[0].message.content
+        logger.info(text)
 
         return (
             handler_input.response_builder
