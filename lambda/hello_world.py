@@ -15,6 +15,7 @@ from ask_sdk_core.handler_input import HandlerInput
 from ask_sdk_model import Response
 from openai import OpenAI
 import os
+from datetime import datetime, timezone
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -26,7 +27,10 @@ logger.setLevel(logging.INFO)
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 SERVICE_ACCOUNT_KEY = os.environ['SERVICE_ACCOUNT_KEY']
 
-# firestoreの初期化
+# Initialize OpenAI API client
+open_ai_client = OpenAI()
+
+# Initialize Firestore
 cred = credentials.Certificate(json.loads(SERVICE_ACCOUNT_KEY))
 firebase_admin.initialize_app(cred)
 db = firestore.client()
@@ -44,37 +48,27 @@ class LaunchRequestHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> Response
         locale = handler_input.request_envelope.request.locale
         speak_output = (
-            "Welcome, you can say Hello or Help. Which would you like to try?"
+            "Tell us the topics you want to follow. For example, say \"Follow Generative AI.\""
         )
         if locale == "ja-JP":
-            speak_output = f"こんにちは、言語は{locale}に設定されています。"
+            speak_output = "フォローしたいトピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
 
-        logger.info(
-            f"ユーザidは: {handler_input.request_envelope.session.user.user_id}"
-        )
-
-        client = OpenAI()
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            # response_format={"type": "json_object"},
-            messages=[
-                {
-                    "role": "system",
-                    "content": """
-                    20文字以内で適当な質問をしてください。
-                    """,
-                },
-                {"role": "user", "content": "こんにちは"},
-            ],
-        )
-        logger.info(dir(response))
-        text = response.choices[0].message.content
-        logger.info(text)
-
-        # firestoreのサンプル
-        doc_ref = db.collection('users').document('aturing')
-        doc = doc_ref.get()
-        logger.info(f"Document data: {doc.to_dict()}")
+        # response = open_ai_client.chat.completions.create(
+        #     model="gpt-4o-mini",
+        #     # response_format={"type": "json_object"},
+        #     messages=[
+        #         {
+        #             "role": "system",
+        #             "content": """
+        #             20文字以内で適当な質問をしてください。
+        #             """,
+        #         },
+        #         {"role": "user", "content": "こんにちは"},
+        #     ],
+        # )
+        # logger.info(dir(response))
+        # text = response.choices[0].message.content
+        # logger.info(text)
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -83,25 +77,39 @@ class LaunchRequestHandler(AbstractRequestHandler):
         )
 
 
-class HelloWorldIntentHandler(AbstractRequestHandler):
-    """Handler for Hello World Intent."""
+class SetTopicIntentHandler(AbstractRequestHandler):
+    """Handler for Set Topic Intent."""
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return ask_utils.is_intent_name("HelloWorldIntent")(handler_input)
+        return ask_utils.is_intent_name("SetTopicIntent")(handler_input)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
+        user_id = handler_input.request_envelope.session.user.user_id
+        slots = handler_input.request_envelope.request.intent.slots
+        topic = slots["Topic"].value if "Topic" in slots else None
+
+        self.set_topic(user_id, topic)
+
         locale = handler_input.request_envelope.request.locale
-        speak_output = "Hello Python World from Classes!"
+        speak_output = f"{topic} has been followed. Please wait a moment and try reopening Trend Curator."
         if locale == "ja-JP":
-            speak_output = "こんにちはパイソンワールド、クラスより"
+            speak_output = f"{topic}をフォローしました。しばらく時間をおいて、もう一度トレンドキュレーターを開いてみてください。"
 
         return (
             handler_input.response_builder.speak(speak_output)
             # .ask("add a reprompt if you want to keep the session open for the user to respond")
             .response
         )
+    
+    def set_topic(self, user_id, topic):
+        now = datetime.now(timezone.utc).isoformat()
+        doc_ref = db.collection('users').document(user_id)
+        doc_ref.set({
+            'topic': topic,
+            'last_accessed': now
+        }, merge=True)
 
 
 class HelpIntentHandler(AbstractRequestHandler):
@@ -206,7 +214,7 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
 sb = SkillBuilder()
 
 sb.add_request_handler(LaunchRequestHandler())
-sb.add_request_handler(HelloWorldIntentHandler())
+sb.add_request_handler(SetTopicIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())
