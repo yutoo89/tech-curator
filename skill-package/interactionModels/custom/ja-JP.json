@@ -1,5 +1,26 @@
 {
   "interactionModel": {
+    "dialog": {
+      "intents": [
+        {
+          "slots": [
+            {
+              "name": "Topic",
+              "elicitationRequired": true,
+              "type": "AMAZON.SearchQuery",
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.64683699239.482354061488"
+              }
+            }
+          ],
+          "name": "SetTopicIntent",
+          "confirmationRequired": false,
+          "prompts": {}
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
     "languageModel": {
       "intents": [
         {
@@ -15,13 +36,41 @@
           "samples": []
         },
         {
-          "slots": [],
-          "name": "HelloWorldIntent",
+          "slots": [
+            {
+              "name": "Topic",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "name": "SetTopicIntent",
           "samples": [
-            "こんにちはと言って",
-            "はい",
-            "ご機嫌いかが",
-            "こんにちは"
+            "{Topic} を登録",
+            "{Topic} をフォロー",
+            "{Topic} の最新情報を知りたい",
+            "{Topic} を追加",
+            "{Topic} を追加して",
+            "{Topic} を追加してください",
+            "{Topic} をフォローして",
+            "{Topic} をフォローしてください",
+            "{Topic} のフォローをお願いします",
+            "{Topic} のフォローを開始",
+            "{Topic} のフォローを開始して",
+            "{Topic} のフォローを開始してください",
+            "{Topic} を購読",
+            "{Topic} を購読して",
+            "{Topic} を購読してください",
+            "{Topic} の購読をお願いします",
+            "{Topic} の購読を開始",
+            "{Topic} の購読を開始して",
+            "{Topic} の購読を開始してください",
+            "{Topic} を登録して",
+            "{Topic} を登録してください",
+            "{Topic} を登録する",
+            "{Topic} の登録をお願いします",
+            "{Topic} のニュースを聞きたい",
+            "{Topic} に関するニュースを聞きたい",
+            "{Topic} 関連のニュースを聞きたい",
+            "{Topic} 関連の最新情報を知りたい"
           ]
         },
         {
@@ -31,6 +80,17 @@
       ],
       "types": [],
       "invocationName": "トレンドキュレーター"
-    }
+    },
+    "prompts": [
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "どのトピックをフォローしますか？"
+          }
+        ],
+        "id": "Elicit.Slot.64683699239.482354061488"
+      }
+    ]
   }
 }

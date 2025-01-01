@@ -1,5 +1,26 @@
 {
   "interactionModel": {
+    "dialog": {
+      "intents": [
+        {
+          "slots": [
+            {
+              "name": "Topic",
+              "elicitationRequired": true,
+              "type": "AMAZON.SearchQuery",
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.235711947139.874932121073"
+              }
+            }
+          ],
+          "name": "SetTopicIntent",
+          "confirmationRequired": false,
+          "prompts": {}
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
     "languageModel": {
       "intents": [
         {
@@ -15,16 +36,44 @@
           "samples": []
         },
         {
-          "slots": [],
-          "name": "HelloWorldIntent",
+          "slots": [
+            {
+              "name": "Topic",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "name": "SetTopicIntent",
           "samples": [
-            "hello",
-            "how are you",
-            "say hi world",
-            "say hi",
-            "hi",
-            "say hello world",
-            "say hello"
+            "Register {Topic}",
+            "Follow {Topic}",
+            "I want to know the latest news about {Topic}",
+            "Add {Topic}",
+            "Add {Topic} to the list",
+            "Please add {Topic}",
+            "Follow {Topic} please",
+            "Please follow {Topic}",
+            "Start following {Topic}",
+            "Please start following {Topic}",
+            "Begin following {Topic}",
+            "Please begin following {Topic}",
+            "Subscribe to {Topic}",
+            "Subscribe to {Topic} please",
+            "Please subscribe to {Topic}",
+            "I would like to subscribe to {Topic}",
+            "Start subscribing to {Topic}",
+            "Please start subscribing to {Topic}",
+            "Begin subscribing to {Topic}",
+            "Please begin subscribing to {Topic}",
+            "Register {Topic} to my list",
+            "Please register {Topic}",
+            "Add {Topic} to my feed",
+            "I would like to register {Topic}",
+            "I want to hear news about {Topic}",
+            "I want to hear the latest news about {Topic}",
+            "Let me hear news about {Topic}",
+            "Tell me news about {Topic}",
+            "I want the latest updates about {Topic}",
+            "Give me the latest updates about {Topic}"
           ]
         },
         {
@@ -34,6 +83,17 @@
       ],
       "types": [],
       "invocationName": "trend curator"
-    }
+    },
+    "prompts": [
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Which topic would you like to follow?"
+          }
+        ],
+        "id": "Elicit.Slot.235711947139.874932121073"
+      }
+    ]
   }
 }

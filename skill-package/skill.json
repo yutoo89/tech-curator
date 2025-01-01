@@ -14,16 +14,9 @@
       "locales": {
         "en-US": {},
         "ja-JP": {}
-      },
-      "shoppingKit": {
-        "isAmazonAssociatesOnAlexaEnabled": false,
-        "isShoppingActionsEnabled": false
       }
     },
     "publishingInformation": {
-      "automaticDistribution": {
-        "isActive": false
-      },
       "distributionCountries": [],
       "isAvailableWorldwide": true,
       "locales": {
