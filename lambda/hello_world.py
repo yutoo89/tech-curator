@@ -15,11 +15,21 @@ from ask_sdk_core.handler_input import HandlerInput
 from ask_sdk_model import Response
 from openai import OpenAI
 import os
+import json
+import firebase_admin
+from firebase_admin import credentials, firestore
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+SERVICE_ACCOUNT_KEY = os.environ['SERVICE_ACCOUNT_KEY']
+
+# firestoreの初期化
+cred = credentials.Certificate(json.loads(SERVICE_ACCOUNT_KEY))
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 
 class LaunchRequestHandler(AbstractRequestHandler):
@@ -60,6 +70,11 @@ class LaunchRequestHandler(AbstractRequestHandler):
         logger.info(dir(response))
         text = response.choices[0].message.content
         logger.info(text)
+
+        # firestoreのサンプル
+        doc_ref = db.collection('users').document('aturing')
+        doc = doc_ref.get()
+        logger.info(f"Document data: {doc.to_dict()}")
 
         return (
             handler_input.response_builder.speak(speak_output)
