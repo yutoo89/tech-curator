@@ -13,7 +13,6 @@ import ask_sdk_core.utils as ask_utils
 from ask_sdk_core.handler_input import HandlerInput
 
 from ask_sdk_model import Response
-from openai import OpenAI
 import os
 from datetime import datetime, timezone
 import json
@@ -24,13 +23,8 @@ from firebase_admin import credentials, firestore
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-SERVICE_ACCOUNT_KEY = os.environ['SERVICE_ACCOUNT_KEY']
-
-# Initialize OpenAI API client
-open_ai_client = OpenAI()
-
 # Initialize Firestore
+SERVICE_ACCOUNT_KEY = os.environ["SERVICE_ACCOUNT_KEY"]
 cred = credentials.Certificate(json.loads(SERVICE_ACCOUNT_KEY))
 firebase_admin.initialize_app(cred)
 db = firestore.client()
@@ -47,34 +41,48 @@ class LaunchRequestHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         locale = handler_input.request_envelope.request.locale
-        speak_output = (
-            "Tell us the topics you want to follow. For example, say \"Follow Generative AI.\""
-        )
+        speak_output = 'Tell us the topics you want to follow. For example, say "Follow Generative AI."'
         if locale == "ja-JP":
             speak_output = "フォローしたいトピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
-
-        # response = open_ai_client.chat.completions.create(
-        #     model="gpt-4o-mini",
-        #     # response_format={"type": "json_object"},
-        #     messages=[
-        #         {
-        #             "role": "system",
-        #             "content": """
-        #             20文字以内で適当な質問をしてください。
-        #             """,
-        #         },
-        #         {"role": "user", "content": "こんにちは"},
-        #     ],
-        # )
-        # logger.info(dir(response))
-        # text = response.choices[0].message.content
-        # logger.info(text)
 
         return (
             handler_input.response_builder.speak(speak_output)
             .ask(speak_output)
             .response
         )
+
+
+class TopicCreater:
+    def __init__(self, db: firestore.Client, user_id: str, topic: str):
+        self.db = db
+        self.user_id = user_id
+        self.topic = topic
+
+    def run(self) -> None:
+        topic_doc_ref = db.collection("topics").document(self.user_id)
+        topic_doc_ref.set({"raw_topic": self.topic}, merge=True)
+
+
+class AccessUpdater:
+    def __init__(self, db: firestore.Client, user_id: str):
+        self.db = db
+        self.user_id = user_id
+
+    def run(self) -> None:
+        now = datetime.now(timezone.utc).isoformat()
+        doc_ref = self.db.collection("accesses").document(self.user_id)
+        doc = doc_ref.get()
+
+        if doc.exists:
+            access_data = doc.to_dict()
+            current_last_accessed = access_data.get("last_accessed")
+
+            doc_ref.set(
+                {"last_accessed": now, "previous_accessed": current_last_accessed},
+                merge=True,
+            )
+        else:
+            doc_ref.set({"last_accessed": now, "previous_accessed": None})
 
 
 class SetTopicIntentHandler(AbstractRequestHandler):
@@ -102,14 +110,10 @@ class SetTopicIntentHandler(AbstractRequestHandler):
             # .ask("add a reprompt if you want to keep the session open for the user to respond")
             .response
         )
-    
+
     def set_topic(self, user_id, topic):
-        now = datetime.now(timezone.utc).isoformat()
-        doc_ref = db.collection('users').document(user_id)
-        doc_ref.set({
-            'topic': topic,
-            'last_accessed': now
-        }, merge=True)
+        TopicCreater(db, user_id, topic).run()
+        AccessUpdater(db, user_id).run()
 
 
 class HelpIntentHandler(AbstractRequestHandler):
