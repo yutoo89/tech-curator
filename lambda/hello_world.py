@@ -59,8 +59,13 @@ class TopicCreater:
         self.topic = topic
 
     def run(self) -> None:
-        topic_doc_ref = db.collection("topics").document(self.user_id)
-        topic_doc_ref.set({"raw_topic": self.topic}, merge=True)
+        topic_doc_ref = self.db.collection("topics").document(self.user_id)
+        doc = topic_doc_ref.get()
+
+        if doc.exists:
+            topic_doc_ref.delete()
+
+        topic_doc_ref.set({"raw_topic": self.topic})
 
 
 class AccessUpdater:

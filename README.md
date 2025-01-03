@@ -54,3 +54,8 @@ Additional Resources
 -  [Official Alexa Skills Kit Python SDK Docs](https://alexa-skills-kit-python-sdk.readthedocs.io/en/latest/)
 -  [Official Alexa Skills Kit Docs](https://developer.amazon.com/docs/ask-overviews/build-skills-with-the-alexa-skills-kit.html)
 
+### Deploy
+
+```bash
+ask deploy -t skill-infrastructure --ignore-hash
+```
