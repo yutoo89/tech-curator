@@ -17,7 +17,7 @@ from ask_sdk_model import Response
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-from lambda.topic_creator import TopicCreator
+from topic_creator import TopicCreator
 from access_updater import AccessUpdater
 
 
