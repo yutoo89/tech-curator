@@ -17,7 +17,7 @@ from ask_sdk_model import Response
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-from topic_creater import TopicCreater
+from lambda.topic_creator import TopicCreator
 from access_updater import AccessUpdater
 
 
@@ -81,7 +81,7 @@ class SetTopicIntentHandler(AbstractRequestHandler):
         )
 
     def set_topic(self, user_id, topic):
-        TopicCreater(db, user_id, topic).run()
+        TopicCreator(db, user_id, topic).run()
         AccessUpdater(db, user_id).run()
 
 

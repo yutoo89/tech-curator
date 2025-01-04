@@ -1,7 +1,7 @@
 from firebase_admin import firestore
 
 
-class TopicCreater:
+class TopicCreator:
     def __init__(self, db: firestore.Client, user_id: str, topic: str):
         self.db = db
         self.user_id = user_id
