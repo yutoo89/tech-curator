@@ -4,6 +4,8 @@
 # Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
 # session persistence, api calls, and more.
 # This sample is built using the handler classes approach in skill builder.
+import os
+import json
 import logging
 
 from ask_sdk_core.skill_builder import SkillBuilder
@@ -11,22 +13,22 @@ from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.dispatch_components import AbstractExceptionHandler
 import ask_sdk_core.utils as ask_utils
 from ask_sdk_core.handler_input import HandlerInput
-
 from ask_sdk_model import Response
-import os
-from datetime import datetime, timezone
-import json
 import firebase_admin
 from firebase_admin import credentials, firestore
+
+from topic_creater import TopicCreater
+from access_updater import AccessUpdater
 
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-# Initialize Firestore
-SERVICE_ACCOUNT_KEY = os.environ["SERVICE_ACCOUNT_KEY"]
-cred = credentials.Certificate(json.loads(SERVICE_ACCOUNT_KEY))
-firebase_admin.initialize_app(cred)
+# Firestore 初期化
+if not firebase_admin._apps:
+    SERVICE_ACCOUNT_KEY = os.environ["SERVICE_ACCOUNT_KEY"]
+    cred = credentials.Certificate(json.loads(SERVICE_ACCOUNT_KEY))
+    firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
@@ -50,44 +52,6 @@ class LaunchRequestHandler(AbstractRequestHandler):
             .ask(speak_output)
             .response
         )
-
-
-class TopicCreater:
-    def __init__(self, db: firestore.Client, user_id: str, topic: str):
-        self.db = db
-        self.user_id = user_id
-        self.topic = topic
-
-    def run(self) -> None:
-        topic_doc_ref = self.db.collection("topics").document(self.user_id)
-        doc = topic_doc_ref.get()
-
-        if doc.exists:
-            topic_doc_ref.delete()
-
-        topic_doc_ref.set({"raw_topic": self.topic})
-
-
-class AccessUpdater:
-    def __init__(self, db: firestore.Client, user_id: str):
-        self.db = db
-        self.user_id = user_id
-
-    def run(self) -> None:
-        now = datetime.now(timezone.utc).isoformat()
-        doc_ref = self.db.collection("accesses").document(self.user_id)
-        doc = doc_ref.get()
-
-        if doc.exists:
-            access_data = doc.to_dict()
-            current_last_accessed = access_data.get("last_accessed")
-
-            doc_ref.set(
-                {"last_accessed": now, "previous_accessed": current_last_accessed},
-                merge=True,
-            )
-        else:
-            doc_ref.set({"last_accessed": now, "previous_accessed": None})
 
 
 class SetTopicIntentHandler(AbstractRequestHandler):

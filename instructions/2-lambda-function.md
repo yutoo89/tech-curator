@@ -44,7 +44,7 @@ In the [first step of this guide](1-voice-user-interface.md), we built the Voice
 
     We have provided the code for this skill [here](../lambda/py). To properly upload this code to Lambda, you'll need to perform the following:
     
-    1. This skill uses the [ASK SDK for Python](https://github.com/alexa/alexa-skills-kit-sdk-for-python) for development. The skill code is provided in the [hello_world.py](../lambda/py/hello_world.py), and the dependencies are mentioned in [requirements.txt](../lambda/py/requirements.txt). Download the contents of the [lambda/py](../lambda/py) folder. 
+    1. This skill uses the [ASK SDK for Python](https://github.com/alexa/alexa-skills-kit-sdk-for-python) for development. The skill code is provided in the [lambda_function.py](../lambda/py/lambda_function.py), and the dependencies are mentioned in [requirements.txt](../lambda/py/requirements.txt). Download the contents of the [lambda/py](../lambda/py) folder. 
     2. On your system, navigate to the lambda folder and install the dependencies in a new folder called “skill_env” using the following command:
     
         ```
@@ -59,7 +59,7 @@ In the [first step of this guide](1-voice-user-interface.md), we built the Voice
     
     4. Zip the contents of the `skill_env` folder. Remember to zip the **contents** of the folder and **NOT** the folder itself.
     5. On the AWS Lambda console, change the **code entry type** drop-down to **Upload a .ZIP file**, upload the zip created in the previous step.
-    6. Change the handler name to ``hello_world.handler`` and click on **Save**.
+    6. Change the handler name to ``lambda_function.handler`` and click on **Save**.
     
     *(Optional)* Follow the ASK Python SDK [Getting Started](https://alexa-skills-kit-python-sdk.readthedocs.io/en/latest/GETTING_STARTED.html#adding-the-ask-sdk-for-python-to-your-project) documentation, to check alternative ways of installing the sdk and deploying to AWS Lambda console.
 

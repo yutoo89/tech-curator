@@ -14,7 +14,7 @@
       "skillInfrastructure": {
         "userConfig": {
           "runtime": "python3.9",
-          "handler": "hello_world.handler",
+          "handler": "lambda_function.handler",
           "awsRegion": "ap-northeast-1"
         },
         "type": "@ask-cli/lambda-deployer"
