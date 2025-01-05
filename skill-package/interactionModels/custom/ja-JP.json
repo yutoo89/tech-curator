@@ -15,6 +15,23 @@
             }
           ],
           "name": "SetTopicIntent",
+          "delegationStrategy": "ALWAYS",
+          "confirmationRequired": false,
+          "prompts": {}
+        },
+        {
+          "slots": [
+            {
+              "name": "TrendDigestIndex",
+              "elicitationRequired": true,
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1461636781301.1453351771192"
+              }
+            }
+          ],
+          "name": "GetTrendDetailIntent",
           "confirmationRequired": false,
           "prompts": {}
         }
@@ -39,7 +56,12 @@
           "slots": [
             {
               "name": "Topic",
-              "type": "AMAZON.SearchQuery"
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "{Topic} のニュースを教えてください",
+                "{Topic} をフォローしてください",
+                "{Topic} をフォロー"
+              ]
             }
           ],
           "name": "SetTopicIntent",
@@ -70,12 +92,44 @@
             "{Topic} のニュースを聞きたい",
             "{Topic} に関するニュースを聞きたい",
             "{Topic} 関連のニュースを聞きたい",
-            "{Topic} 関連の最新情報を知りたい"
+            "{Topic} 関連の最新情報を知りたい",
+            "トピックを変更したい",
+            "フォローするトピックを変更してください",
+            "違うニュースを教えてください"
           ]
         },
         {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
+        },
+        {
+          "slots": [
+            {
+              "name": "TrendDigestIndex",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{TrendDigestIndex} を詳しく"
+              ]
+            }
+          ],
+          "name": "GetTrendDetailIntent",
+          "samples": [
+            "{TrendDigestIndex} を詳しく",
+            "{TrendDigestIndex} を詳しく教えて",
+            "{TrendDigestIndex} について詳しく",
+            "{TrendDigestIndex} について詳しく教えて",
+            "{TrendDigestIndex} の詳細を教えて",
+            "{TrendDigestIndex} を"
+          ]
+        },
+        {
+          "slots": [],
+          "name": "GetTrendSummaryIntent",
+          "samples": [
+            "最近のニュースはある",
+            "トレンドを教えて",
+            "ニュースを教えて"
+          ]
         }
       ],
       "types": [],
@@ -86,10 +140,19 @@
         "variations": [
           {
             "type": "PlainText",
-            "value": "どのトピックをフォローしますか？"
+            "value": "フォローしたいトピックを教えてください。たとえば、「昆虫の雑学をフォロー」と言ってみてください。"
           }
         ],
         "id": "Elicit.Slot.64683699239.482354061488"
+      },
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "詳しく知りたいニュースの番号を教えてください。"
+          }
+        ],
+        "id": "Elicit.Slot.1461636781301.1453351771192"
       }
     ]
   }
