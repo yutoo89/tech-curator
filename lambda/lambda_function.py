@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK for Python.
-# Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
-# session persistence, api calls, and more.
-# This sample is built using the handler classes approach in skill builder.
 import os
 import json
 import logging
@@ -17,19 +13,50 @@ from ask_sdk_model import Response
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-from topic_creator import TopicCreator
-from access_updater import AccessUpdater
-
+from topic import Topic
+from access import Access
+from trend import Trend, DocumentNotFoundError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-# Firestore 初期化
+# Firestore initialization
 if not firebase_admin._apps:
     SERVICE_ACCOUNT_KEY = os.environ["SERVICE_ACCOUNT_KEY"]
     cred = credentials.Certificate(json.loads(SERVICE_ACCOUNT_KEY))
     firebase_admin.initialize_app(cred)
 db = firestore.client()
+
+
+def trend_summary(
+    db: firestore.Client, user_id: str, locale: str, session_attributes
+) -> str:
+    try:
+        trend = Trend.get(db, user_id)
+
+        session_attributes["valid_indexes"] = trend.digest_indices()
+
+        period_str = "." if locale != "ja-JP" else "。"
+        summary = (
+            f"Topics related to {trend.topic}."
+            if locale != "ja-JP"
+            else f"{trend.topic}に関する話題です。"
+        )
+        for digest in trend.digests.values():
+            summary += f"{digest.index}: {digest.title}{period_str}"
+        summary += (
+            "If you would like to hear more details, please state the number, such as '1 for details.'"
+            if locale != "ja-JP"
+            else "詳しい内容を聞きたいときは「ニュース『1』を詳しく」のように番号をお伝えください。"
+        )
+
+        return summary
+    except DocumentNotFoundError:
+        return (
+            'Tell us the topics you want to follow. For example, say "Follow Generative AI."'
+            if locale != "ja-JP"
+            else "フォローしたいトピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+        )
 
 
 class LaunchRequestHandler(AbstractRequestHandler):
@@ -42,10 +69,33 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
+        session_attributes = handler_input.attributes_manager.session_attributes
+        user_id = handler_input.request_envelope.session.user.user_id
         locale = handler_input.request_envelope.request.locale
-        speak_output = 'Tell us the topics you want to follow. For example, say "Follow Generative AI."'
-        if locale == "ja-JP":
-            speak_output = "フォローしたいトピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+
+        Access.create_or_update(db, user_id)
+        speak_output = trend_summary(db, user_id, locale, session_attributes)
+
+        return (
+            handler_input.response_builder.speak(speak_output)
+            .ask(speak_output)
+            .response
+        )
+
+
+class GetTrendSummaryHandler(AbstractRequestHandler):
+    """Handler for providing trend summary based on user request."""
+
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("GetTrendSummaryIntent")(handler_input)
+
+    def handle(self, handler_input):
+        session_attributes = handler_input.attributes_manager.session_attributes
+        user_id = handler_input.request_envelope.session.user.user_id
+        locale = handler_input.request_envelope.request.locale
+
+        Access.create_or_update(db, user_id)
+        speak_output = trend_summary(db, user_id, locale, session_attributes)
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -66,13 +116,14 @@ class SetTopicIntentHandler(AbstractRequestHandler):
         user_id = handler_input.request_envelope.session.user.user_id
         slots = handler_input.request_envelope.request.intent.slots
         topic = slots["Topic"].value if "Topic" in slots else None
-
-        self.set_topic(user_id, topic)
-
         locale = handler_input.request_envelope.request.locale
-        speak_output = f"{topic} has been followed. Please wait a moment and try reopening Trend Curator."
-        if locale == "ja-JP":
-            speak_output = f"{topic}をフォローしました。しばらく時間をおいて、もう一度トレンドキュレーターを開いてみてください。"
+
+        self.set_topic(user_id, topic, locale)
+        speak_output = (
+            f"{topic} has been followed. Please wait a moment and try reopening Trend Curator."
+            if locale != "ja-JP"
+            else f"{topic}をフォローしました。しばらく時間をおいて、もう一度トレンドキュレーターを開いてみてください。"
+        )
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -80,9 +131,66 @@ class SetTopicIntentHandler(AbstractRequestHandler):
             .response
         )
 
-    def set_topic(self, user_id, topic):
-        TopicCreator(db, user_id, topic).run()
-        AccessUpdater(db, user_id).run()
+    def set_topic(self, user_id, topic, locale):
+        Topic.create(db, user_id, topic, locale)
+        Access.create_or_update(db, user_id)
+
+
+class GetTrendDetailHandler(AbstractRequestHandler):
+    """Handler for requesting details about specific news."""
+
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("GetTrendDetailIntent")(handler_input)
+
+    def handle(self, handler_input):
+        user_id = handler_input.request_envelope.session.user.user_id
+        slots = handler_input.request_envelope.request.intent.slots
+        trend_digest_index = (
+            int(slots["TrendDigestIndex"].value)
+            if "TrendDigestIndex" in slots
+            else None
+        )
+
+        locale = handler_input.request_envelope.request.locale
+        session_attributes = handler_input.attributes_manager.session_attributes
+        valid_indexes = session_attributes.get("valid_indexes", [])
+
+        if trend_digest_index is not None and trend_digest_index in valid_indexes:
+            trend = Trend.get(db, user_id)
+            news_body = trend.digests[trend_digest_index].body
+            valid_indexes.remove(trend_digest_index)
+            session_attributes["valid_indexes"] = valid_indexes
+
+            if valid_indexes:
+                speak_output = news_body + (
+                    " Would you like to hear more details about another topic? Please state the number, such as '1 for details.'"
+                    if locale != "ja-JP"
+                    else "他に詳しく聞きたい話題はありますか？「'1'を詳しく」のように番号をお伝えください。"
+                )
+            else:
+                speak_output = news_body + (
+                    "That's all for today's news, please wait for the next update."
+                    if locale != "ja-JP"
+                    else "本日の話題は以上です。次の更新をお待ちください。"
+                )
+                return (
+                    handler_input.response_builder.speak(speak_output)
+                    .set_should_end_session(True)
+                    .response
+                )
+        else:
+            valid_indexes_str = ", ".join([f"'{i}'" for i in valid_indexes])
+            speak_output = (
+                f"The specified index does not exist. Please choose an index from {valid_indexes_str}."
+                if locale != "ja-JP"
+                else f"指定された番号が存在しません。{valid_indexes_str}の番号から選んでください。"
+            )
+
+        return (
+            handler_input.response_builder.speak(speak_output)
+            .ask(speak_output)
+            .response
+        )
 
 
 class HelpIntentHandler(AbstractRequestHandler):
@@ -93,8 +201,7 @@ class HelpIntentHandler(AbstractRequestHandler):
         return ask_utils.is_intent_name("AMAZON.HelpIntent")(handler_input)
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        speak_output = "You can say hello to me! How can I help?"
+        speak_output = "You can ask me to follow a topic or request details about a trend. How can I assist?"
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -188,13 +295,12 @@ sb = SkillBuilder()
 
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(SetTopicIntentHandler())
+sb.add_request_handler(GetTrendSummaryHandler())
+sb.add_request_handler(GetTrendDetailHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())
-sb.add_request_handler(
-    IntentReflectorHandler()
-)  # make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
-
+sb.add_request_handler(IntentReflectorHandler())
 sb.add_exception_handler(CatchAllExceptionHandler())
 
 handler = sb.lambda_handler()
