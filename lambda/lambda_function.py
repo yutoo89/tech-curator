@@ -36,12 +36,35 @@ def trend_summary(db: firestore.Client, user_id: str, locale: str) -> str:
             trend.body,
         ]
 
-        return ":".join(speaks)
+        return ("." if locale != "ja-JP" else "。").join(speaks)
     except DocumentNotFoundError:
         return (
             'Tell us the tech topic you want to follow. For example, say "Follow Generative AI."'
             if locale != "ja-JP"
             else "フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+        )
+
+
+def topic_summary(db: firestore.Client, user_id: str, locale: str) -> str:
+    try:
+        topic = Topic.get(db, user_id)
+        if locale == "ja-JP":
+            speaks = [
+                f"現在フォロー中のトピックは「{topic.topic}」です。",
+                "違う技術トピックをフォローしたい場合は、たとえば、「生成AIをフォロー」のように言ってください。",
+            ]
+        else:
+            speaks = [
+                f"The topic you are currently following is '{topic.topic}'.",
+                "If you want to follow a different tech topic, say something like 'Follow Generative AI.'",
+            ]
+
+        return " ".join(speaks)
+    except DocumentNotFoundError:
+        return (
+            "You are not following any topics currently. Please tell me the tech topic you would like to follow. For example, say 'Follow Generative AI.'"
+            if locale != "ja-JP"
+            else "現在フォロー中のトピックはありません。フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
         )
 
 
@@ -99,7 +122,7 @@ class GetTopicIntentHandler(AbstractRequestHandler):
         locale = handler_input.request_envelope.request.locale
 
         Access.create_or_update(db, user_id)
-        speak_output = trend_summary(db, user_id, locale)
+        speak_output = topic_summary(db, user_id, locale)
 
         return (
             handler_input.response_builder.speak(speak_output)
