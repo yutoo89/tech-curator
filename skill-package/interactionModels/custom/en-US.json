@@ -25,15 +25,28 @@
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
-          "samples": []
+          "samples": [
+            "Stop",
+            "Cancel",
+            "Exit"
+          ]
         },
         {
           "name": "AMAZON.HelpIntent",
-          "samples": []
+          "samples": [
+            "Help",
+            "How do I use this",
+            "What can I say"
+          ]
         },
         {
           "name": "AMAZON.StopIntent",
-          "samples": []
+          "samples": [
+            "Stop this",
+            "End the session",
+            "Terminate",
+            "That is enough"
+          ]
         },
         {
           "slots": [
@@ -79,6 +92,74 @@
         {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
+        },
+        {
+          "slots": [],
+          "name": "GetTrendIntent",
+          "samples": [
+            "Repeat",
+            "Play the news again",
+            "What did you just say",
+            "Let me hear that again",
+            "One more time",
+            "Play the news one more time",
+            "The previous news",
+            "The last one",
+            "Replay the news",
+            "Start from the beginning",
+            "Repeat the last one",
+            "Replay the same news",
+            "Play it again please",
+            "Repeat the news",
+            "Tell me the last thing",
+            "Tell me the news again",
+            "Replay the previous one",
+            "Go back to the beginning",
+            "Please repeat",
+            "Play the latest news again",
+            "What was the last news",
+            "Repeat the earlier news",
+            "Replay the news from the start",
+            "What was said earlier",
+            "Repeat the first news",
+            "Rewind the news",
+            "Tell me the last topic again"
+          ]
+        },
+        {
+          "slots": [],
+          "name": "GetTopicIntent",
+          "samples": [
+            "Change the topic",
+            "I want to change the keyword",
+            "Follow a different topic",
+            "I want to hear about a different news",
+            "What keywords am I following",
+            "What am I following",
+            "Check the topics",
+            "What topics am I currently following",
+            "What topics are registered",
+            "What topics do I have set",
+            "Tell me my current topics",
+            "Show me my news settings",
+            "I want to check what I'm following",
+            "Do you have other topics",
+            "Are there any other topics",
+            "What keywords are registered",
+            "Show me my current topic list",
+            "What themes am I following",
+            "Show me my current news topics",
+            "What registered topics do I have",
+            "Tell me my current follow status",
+            "What themes have I registered",
+            "What news topics am I following",
+            "I want to know my topic settings",
+            "Tell me my current follow information",
+            "What are my topic settings",
+            "Show me other news themes",
+            "What topics have I registered",
+            "Show me my current topic settings"
+          ]
         }
       ],
       "types": [],
