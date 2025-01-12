@@ -23,46 +23,47 @@ class Trend:
     COLLECTION_NAME = "trends"
 
     def __init__(
-        self, topic: str, supplementary_topic: list[str], digests: dict[int, TrendDigest]
+        self,
+        user_id: str,
+        title: str,
+        topic: str,
+        body: str,
+        keywords: list[str],
+        queries: list[str] = None,
     ):
-        if not digests:
-            raise InvalidDigestsError(
-                "The 'digests' dictionary is empty. At least one trend_digest item is required."
-            )
-
+        if queries is None:
+            queries = []
+        self.user_id = user_id
+        self.title = title
         self.topic = topic
-        self.supplementary_topic = supplementary_topic
-        self.digests = digests
+        self.body = body
+        self.keywords = keywords
+        self.queries = queries
 
     @staticmethod
-    def get(db: firestore.Client, user_id: str) -> Trend:
+    def get(db: firestore.Client, user_id: str) -> "Trend":
         doc = db.collection(Trend.COLLECTION_NAME).document(user_id).get()
         if not doc.exists:
             raise DocumentNotFoundError(
                 f"Document with user_id '{user_id}' not found in collection '{Trend.COLLECTION_NAME}'."
             )
 
-        digests = doc.get("digests")
-        if not isinstance(digests, list):
-            raise InvalidDigestsError(
-                "The 'digests' field must be a list of trend_digest items."
-            )
-        if not digests:
-            raise InvalidDigestsError(
-                "The 'digests' field is empty or not found in the document."
-            )
+        title = doc.get("title")
+        topic = doc.get("topic")
+        body = doc.get("body")
+        keywords = doc.get("keywords")
+        queries = doc.get("queries")
 
-        digests_dict = {
-            i + 1: TrendDigest(index=i + 1, title=d["title"], body=d["body"])
-            for i, d in enumerate(digests)
-        }
+        if not isinstance(keywords, list):
+            raise ValueError("The 'keywords' field must be a list of strings.")
+        if not isinstance(queries, list):
+            raise ValueError("The 'queries' field must be a list of strings.")
 
         return Trend(
-            topic=doc.get("topic"),
-            supplementary_topic=doc.get("supplementary_topic"),
-            digests=digests_dict,
+            user_id=user_id,
+            title=title,
+            topic=topic,
+            body=body,
+            keywords=keywords,
+            queries=queries,
         )
-
-
-    def digest_indices(self) -> list[int]:
-        return list(self.digests.keys())

@@ -28,39 +28,25 @@ if not firebase_admin._apps:
 db = firestore.client()
 
 
-def trend_summary(
-    db: firestore.Client, user_id: str, locale: str, session_attributes
-) -> str:
+def trend_summary(db: firestore.Client, user_id: str, locale: str) -> str:
     try:
         trend = Trend.get(db, user_id)
+        speaks = [
+            trend.title,
+            trend.body,
+        ]
 
-        session_attributes["valid_indexes"] = trend.digest_indices()
-
-        period_str = "." if locale != "ja-JP" else "。"
-        summary = (
-            f"Topics related to {trend.topic}."
-            if locale != "ja-JP"
-            else f"{trend.topic}に関する話題です。"
-        )
-        for digest in trend.digests.values():
-            summary += f"{digest.index}: {digest.title}{period_str}"
-        summary += (
-            "If you would like to hear more details, please state the number, such as '1 for details.'"
-            if locale != "ja-JP"
-            else "詳しい内容を聞きたいときは「ニュース『1』を詳しく」のように番号をお伝えください。"
-        )
-
-        return summary
+        return ":".join(speaks)
     except DocumentNotFoundError:
         return (
-            'Tell us the topics you want to follow. For example, say "Follow Generative AI."'
+            'Tell us the tech topic you want to follow. For example, say "Follow Generative AI."'
             if locale != "ja-JP"
-            else "フォローしたいトピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+            else "フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
         )
 
 
 class LaunchRequestHandler(AbstractRequestHandler):
-    """Handler for Skill Launch."""
+    """スキル起動"""
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
@@ -69,12 +55,11 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        session_attributes = handler_input.attributes_manager.session_attributes
         user_id = handler_input.request_envelope.session.user.user_id
         locale = handler_input.request_envelope.request.locale
 
         Access.create_or_update(db, user_id)
-        speak_output = trend_summary(db, user_id, locale, session_attributes)
+        speak_output = trend_summary(db, user_id, locale)
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -83,19 +68,38 @@ class LaunchRequestHandler(AbstractRequestHandler):
         )
 
 
-class GetTrendSummaryHandler(AbstractRequestHandler):
-    """Handler for providing trend summary based on user request."""
+class GetTrendIntentHandler(AbstractRequestHandler):
+    """ニュース再生"""
 
     def can_handle(self, handler_input):
-        return ask_utils.is_intent_name("GetTrendSummaryIntent")(handler_input)
+        return ask_utils.is_intent_name("GetTrendIntent")(handler_input)
 
     def handle(self, handler_input):
-        session_attributes = handler_input.attributes_manager.session_attributes
         user_id = handler_input.request_envelope.session.user.user_id
         locale = handler_input.request_envelope.request.locale
 
         Access.create_or_update(db, user_id)
-        speak_output = trend_summary(db, user_id, locale, session_attributes)
+        speak_output = trend_summary(db, user_id, locale)
+
+        return (
+            handler_input.response_builder.speak(speak_output)
+            .ask(speak_output)
+            .response
+        )
+
+
+class GetTopicIntentHandler(AbstractRequestHandler):
+    """トピック確認"""
+
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("GetTopicIntent")(handler_input)
+
+    def handle(self, handler_input):
+        user_id = handler_input.request_envelope.session.user.user_id
+        locale = handler_input.request_envelope.request.locale
+
+        Access.create_or_update(db, user_id)
+        speak_output = trend_summary(db, user_id, locale)
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -105,7 +109,7 @@ class GetTrendSummaryHandler(AbstractRequestHandler):
 
 
 class SetTopicIntentHandler(AbstractRequestHandler):
-    """Handler for Set Topic Intent."""
+    """トピック登録"""
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
@@ -134,63 +138,6 @@ class SetTopicIntentHandler(AbstractRequestHandler):
     def set_topic(self, user_id, topic, locale):
         Topic.create(db, user_id, topic, locale)
         Access.create_or_update(db, user_id)
-
-
-class GetTrendDetailHandler(AbstractRequestHandler):
-    """Handler for requesting details about specific news."""
-
-    def can_handle(self, handler_input):
-        return ask_utils.is_intent_name("GetTrendDetailIntent")(handler_input)
-
-    def handle(self, handler_input):
-        user_id = handler_input.request_envelope.session.user.user_id
-        slots = handler_input.request_envelope.request.intent.slots
-        trend_digest_index = (
-            int(slots["TrendDigestIndex"].value)
-            if "TrendDigestIndex" in slots
-            else None
-        )
-
-        locale = handler_input.request_envelope.request.locale
-        session_attributes = handler_input.attributes_manager.session_attributes
-        valid_indexes = session_attributes.get("valid_indexes", [])
-
-        if trend_digest_index is not None and trend_digest_index in valid_indexes:
-            trend = Trend.get(db, user_id)
-            news_body = trend.digests[trend_digest_index].body
-            valid_indexes.remove(trend_digest_index)
-            session_attributes["valid_indexes"] = valid_indexes
-
-            if valid_indexes:
-                speak_output = news_body + (
-                    " Would you like to hear more details about another topic? Please state the number, such as '1 for details.'"
-                    if locale != "ja-JP"
-                    else "他に詳しく聞きたい話題はありますか？「'1'を詳しく」のように番号をお伝えください。"
-                )
-            else:
-                speak_output = news_body + (
-                    "That's all for today's news, please wait for the next update."
-                    if locale != "ja-JP"
-                    else "本日の話題は以上です。次の更新をお待ちください。"
-                )
-                return (
-                    handler_input.response_builder.speak(speak_output)
-                    .set_should_end_session(True)
-                    .response
-                )
-        else:
-            valid_indexes_str = ", ".join([f"'{i}'" for i in valid_indexes])
-            speak_output = (
-                f"The specified index does not exist. Please choose an index from {valid_indexes_str}."
-                if locale != "ja-JP"
-                else f"指定された番号が存在しません。{valid_indexes_str}の番号から選んでください。"
-            )
-
-        return (
-            handler_input.response_builder.speak(speak_output)
-            .ask(speak_output)
-            .response
-        )
 
 
 class HelpIntentHandler(AbstractRequestHandler):
@@ -295,8 +242,8 @@ sb = SkillBuilder()
 
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(SetTopicIntentHandler())
-sb.add_request_handler(GetTrendSummaryHandler())
-sb.add_request_handler(GetTrendDetailHandler())
+sb.add_request_handler(GetTopicIntentHandler())
+sb.add_request_handler(GetTrendIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())

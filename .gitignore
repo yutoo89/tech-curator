@@ -1,2 +1,4 @@
 .ask
 .DS_Store
+.venv
+.envrc
