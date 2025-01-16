@@ -147,9 +147,9 @@ class SetTopicIntentHandler(AbstractRequestHandler):
 
         self.set_topic(user_id, topic, locale)
         speak_output = (
-            f"{topic} has been followed. Please wait a moment and try reopening Trend Curator."
+            f"{topic} has been followed. Please wait a moment and try reopening Tech Curator."
             if locale != "ja-JP"
-            else f"{topic}をフォローしました。しばらく時間をおいて、もう一度トレンドキュレーターを開いてみてください。"
+            else f"{topic}をフォローしました。しばらく時間をおいて、もう一度テックキュレーターを開いてみてください。"
         )
 
         return (
