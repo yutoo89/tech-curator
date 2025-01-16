@@ -101,9 +101,15 @@ class GetTrendIntentHandler(AbstractRequestHandler):
         user_id = handler_input.request_envelope.session.user.user_id
         locale = handler_input.request_envelope.request.locale
 
+        trend = Trend.get(db, user_id)
+        if trend.remaining_usage == 0:
+            speak_output = append_usage_message("", trend.remaining_usage, locale)
+            return handler_input.response_builder.speak(speak_output).response
+
         Access.create_or_update(db, user_id)
         speak_output = trend_summary(db, user_id, locale)
 
+        speak_output = append_usage_message(speak_output, trend.remaining_usage, locale)
         return (
             handler_input.response_builder.speak(speak_output)
             .ask(speak_output)
@@ -121,9 +127,15 @@ class GetTopicIntentHandler(AbstractRequestHandler):
         user_id = handler_input.request_envelope.session.user.user_id
         locale = handler_input.request_envelope.request.locale
 
+        trend = Trend.get(db, user_id)
+        if trend.remaining_usage == 0:
+            speak_output = append_usage_message("", trend.remaining_usage, locale)
+            return handler_input.response_builder.speak(speak_output).response
+
         Access.create_or_update(db, user_id)
         speak_output = topic_summary(db, user_id, locale)
 
+        speak_output = append_usage_message(speak_output, trend.remaining_usage, locale)
         return (
             handler_input.response_builder.speak(speak_output)
             .ask(speak_output)
@@ -135,15 +147,18 @@ class SetTopicIntentHandler(AbstractRequestHandler):
     """トピック登録"""
 
     def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
         return ask_utils.is_intent_name("SetTopicIntent")(handler_input)
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
         user_id = handler_input.request_envelope.session.user.user_id
         slots = handler_input.request_envelope.request.intent.slots
         topic = slots["Topic"].value if "Topic" in slots else None
         locale = handler_input.request_envelope.request.locale
+
+        trend = Trend.get(db, user_id)
+        if trend.remaining_usage == 0:
+            speak_output = append_usage_message("", trend.remaining_usage, locale)
+            return handler_input.response_builder.speak(speak_output).response
 
         self.set_topic(user_id, topic, locale)
         speak_output = (
@@ -152,6 +167,8 @@ class SetTopicIntentHandler(AbstractRequestHandler):
             else f"{topic}をフォローしました。しばらく時間をおいて、もう一度テックキュレーターを開いてみてください。"
         )
 
+        # NOTE: トピックの登録により利用回数が1回減るため調整
+        speak_output = append_usage_message(speak_output, trend.remaining_usage - 1, locale)
         return (
             handler_input.response_builder.speak(speak_output)
             .set_should_end_session(True)
@@ -255,6 +272,39 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
             .ask(speak_output)
             .response
         )
+
+
+class TrendUsageExceededError(Exception):
+    """Custom exception for when usage exceeds the limit."""
+
+    pass
+
+
+def get_remaining_usage(db: firestore.Client, user_id: str) -> int:
+    """Fetch the remaining usage for the user."""
+    doc = db.collection(Trend.COLLECTION_NAME).document(user_id).get()
+    if not doc.exists:
+        return Trend.MONTHLY_LIMIT  # Default to the full limit if no document exists
+
+    remaining_usage = doc.get("remaining_usage", Trend.MONTHLY_LIMIT)
+    return remaining_usage
+
+
+def append_usage_message(speak_output: str, remaining_usage: int, locale: str) -> str:
+    """Append remaining usage message to the speak output."""
+    if remaining_usage == 0:
+        return (
+            "You have reached the monthly limit for topic changes and questions. Please try again next month."
+            if locale != "ja-JP"
+            else "今月のフォロートピックの変更、および質問回数の上限に達しました。来月もう一度お試しください。"
+        )
+    elif remaining_usage <= 10:
+        return (
+            f"{speak_output} You have {remaining_usage} requests remaining this month for topic changes and questions."
+            if locale != "ja-JP"
+            else f"{speak_output} 今月のフォロートピックの変更、および質問の残り回数は{remaining_usage}回です。"
+        )
+    return speak_output
 
 
 # The SkillBuilder object acts as the entry point for your skill, routing all request and response

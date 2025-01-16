@@ -7,20 +7,9 @@ class DocumentNotFoundError(Exception):
         super().__init__(message)
 
 
-class InvalidDigestsError(Exception):
-    def __init__(self, message: str):
-        super().__init__(message)
-
-
-class TrendDigest:
-    def __init__(self, index: int, title: str, body: str):
-        self.index = index
-        self.title = title
-        self.body = body
-
-
 class Trend:
     COLLECTION_NAME = "trends"
+    DEFAULT_REMAINING_USAGE = 100
 
     def __init__(
         self,
@@ -29,16 +18,18 @@ class Trend:
         topic: str,
         body: str,
         keywords: list[str],
-        queries: list[str] = None,
+        queries: list[str],
+        monthly_usage: int,
+        remaining_usage: int,
     ):
-        if queries is None:
-            queries = []
         self.user_id = user_id
         self.title = title
         self.topic = topic
         self.body = body
         self.keywords = keywords
         self.queries = queries
+        self.monthly_usage = monthly_usage
+        self.remaining_usage = remaining_usage
 
     @staticmethod
     def get(db: firestore.Client, user_id: str) -> "Trend":
@@ -48,11 +39,14 @@ class Trend:
                 f"Document with user_id '{user_id}' not found in collection '{Trend.COLLECTION_NAME}'."
             )
 
-        title = doc.get("title")
-        topic = doc.get("topic")
-        body = doc.get("body")
-        keywords = doc.get("keywords")
-        queries = doc.get("queries")
+        data = doc.to_dict()
+        title = data.get("title", "")
+        topic = data.get("topic", "")
+        body = data.get("body", "")
+        keywords = data.get("keywords", [])
+        queries = data.get("queries", [])
+        monthly_usage = data.get("monthly_usage", 0)
+        remaining_usage = data.get("remaining_usage", Trend.DEFAULT_REMAINING_USAGE)
 
         if not isinstance(keywords, list):
             raise ValueError("The 'keywords' field must be a list of strings.")
@@ -66,4 +60,6 @@ class Trend:
             body=body,
             keywords=keywords,
             queries=queries,
+            monthly_usage=monthly_usage,
+            remaining_usage=remaining_usage,
         )
