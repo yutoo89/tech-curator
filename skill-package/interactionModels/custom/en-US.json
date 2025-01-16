@@ -15,8 +15,10 @@
             }
           ],
           "name": "SetTopicIntent",
-          "confirmationRequired": false,
-          "prompts": {}
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.1650391501523"
+          }
         }
       ],
       "delegationStrategy": "ALWAYS"
@@ -174,6 +176,15 @@
           }
         ],
         "id": "Elicit.Slot.235711947139.874932121073"
+      },
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Would you like to subscribe to {Topic} ?"
+          }
+        ],
+        "id": "Confirm.Intent.1650391501523"
       }
     ]
   }

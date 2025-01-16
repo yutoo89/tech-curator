@@ -16,8 +16,10 @@
           ],
           "name": "SetTopicIntent",
           "delegationStrategy": "ALWAYS",
-          "confirmationRequired": false,
-          "prompts": {}
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.1249030950854"
+          }
         }
       ],
       "delegationStrategy": "ALWAYS"
@@ -192,6 +194,15 @@
           }
         ],
         "id": "Elicit.Slot.1461636781301.1453351771192"
+      },
+      {
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "トピック「 {Topic} 」を 登録します。よろしいですか？"
+          }
+        ],
+        "id": "Confirm.Intent.1249030950854"
       }
     ]
   }
