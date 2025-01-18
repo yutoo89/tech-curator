@@ -32,13 +32,22 @@ if not firebase_admin._apps:
 db = firestore.client()
 
 
-def trend_summary(db: firestore.Client, user_id: str, locale: str) -> str:
+def trend_summary(db: firestore.Client, user_id: str, locale: str, handler_input: HandlerInput) -> str:
     try:
         trend = Trend.get(db, user_id)
+        sample_question = (
+            "If you want to know more details about this news, try saying something like 'Question, about XYZ.'"
+            if locale != "ja-JP"
+            else "このニュースの詳細を知りたい場合は「質問、まるまる」のように言ってみてください。"
+        )
         speaks = [
             trend.title,
             trend.body,
+            sample_question
         ]
+
+        session_attributes = handler_input.attributes_manager.session_attributes
+        session_attributes["trend_body"] = trend.body
 
         return ("." if locale != "ja-JP" else "。").join(speaks)
     except DocumentNotFoundError:
@@ -88,7 +97,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
         locale = handler_input.request_envelope.request.locale
 
         Access.create_or_update(db, user_id)
-        speak_output = trend_summary(db, user_id, locale)
+        speak_output = trend_summary(db, user_id, locale, handler_input)
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -113,7 +122,7 @@ class GetTrendIntentHandler(AbstractRequestHandler):
             return handler_input.response_builder.speak(speak_output).response
 
         Access.create_or_update(db, user_id)
-        speak_output = trend_summary(db, user_id, locale)
+        speak_output = trend_summary(db, user_id, locale, handler_input)
 
         speak_output = append_usage_message(speak_output, trend.remaining_usage, locale)
         return (
@@ -198,6 +207,29 @@ class SetTopicIntentHandler(AbstractRequestHandler):
         topic = Topic.create(db, user_id, topic, locale)
         Access.create_or_update(db, user_id)
         return topic
+
+
+class QuestionIntentHandler(AbstractRequestHandler):
+    """ニュースに関する質問"""
+
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("QuestionIntent")(handler_input)
+
+    def handle(self, handler_input):
+        session_attributes = handler_input.attributes_manager.session_attributes
+        slots = handler_input.request_envelope.request.intent.slots
+        query = slots["Query"].value if "Query" in slots else None
+        trend_body = session_attributes.get("trend_body", None)
+        if trend_body:
+            speak_output = f"クエリは「{query}」、現在のトレンド内容は「{trend_body}」です。質問をどうぞ。"
+        else:
+            speak_output = "トレンド情報が見つかりませんでした。もう一度試してください。"
+
+        return (
+            handler_input.response_builder.speak(speak_output)
+            .ask(speak_output)
+            .response
+        )
 
 
 class HelpIntentHandler(AbstractRequestHandler):
@@ -344,6 +376,7 @@ sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(SetTopicIntentHandler())
 sb.add_request_handler(GetTopicIntentHandler())
 sb.add_request_handler(GetTrendIntentHandler())
+sb.add_request_handler(QuestionIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())
