@@ -169,6 +169,18 @@
             "自分が登録したトピックは何",
             "今のトピック設定を見たい"
           ]
+        },
+        {
+          "slots": [
+            {
+              "name": "Query",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "name": "QuestionIntent",
+          "samples": [
+            "アレクサ {Query} "
+          ]
         }
       ],
       "types": [],

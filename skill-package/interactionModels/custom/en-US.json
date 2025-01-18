@@ -160,6 +160,18 @@
             "What topics have I registered",
             "Show me my current topic settings"
           ]
+        },
+        {
+          "slots": [
+            {
+              "name": "Query",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "name": "QuestionIntent",
+          "samples": [
+            "Alexa {Query}"
+          ]
         }
       ],
       "types": [],
