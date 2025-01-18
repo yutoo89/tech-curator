@@ -52,15 +52,17 @@ def trend_summary(db: firestore.Client, user_id: str, locale: str) -> str:
 def topic_summary(db: firestore.Client, user_id: str, locale: str) -> str:
     try:
         topic = Topic.get(db, user_id)
+
+        example_topic = get_example_topic(topic.topic, locale)
         if locale == "ja-JP":
             speaks = [
                 f"現在フォロー中のトピックは「{topic.topic}」です。",
-                "違う技術トピックをフォローしたい場合は、たとえば、「生成AIをフォロー」のように言ってください。",
+                f"違う技術トピックをフォローしたい場合は、たとえば、「{example_topic}をフォロー」のように言ってください。",
             ]
         else:
             speaks = [
                 f"The topic you are currently following is '{topic.topic}'.",
-                "If you want to follow a different tech topic, say something like 'Follow Generative AI.'",
+                f"If you want to follow a different tech topic, say something like 'Follow {example_topic}.'",
             ]
 
         return " ".join(speaks)
@@ -166,23 +168,21 @@ class SetTopicIntentHandler(AbstractRequestHandler):
 
         topic_instance = self.set_topic(user_id, topic, locale)
 
+        example_topic = get_example_topic(topic_instance.topic, locale)
         if not topic_instance.is_technical_term:
             speak_output = (
-                f"It seems that '{topic_instance.topic}' is not a technical term. Please tell us the technical topic you want to follow. For example, try saying 'Follow Generative AI'"
+                f"It seems that '{topic_instance.topic}' is not a technical term. Please tell us the technical topic you want to follow. For example, try saying 'Follow {example_topic}'."
                 if locale != "ja-JP"
-                else f"「{topic_instance.topic}」は技術用語ではないようです。フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+                else f"「{topic_instance.topic}」は技術用語ではないようです。フォローしたい技術トピックを教えてください。たとえば、「{example_topic}をフォロー」と言ってみてください。"
             )
-            return (
-                handler_input.response_builder.speak(speak_output)
-                .ask(speak_output)
-                .response
+        else:
+            speak_output = (
+                f"You are now following the topic '{topic_instance.topic}'. Please wait a moment and try reopening Tech Curator. "
+                f"If you want to follow a different tech topic, please say something like 'Follow {example_topic}'."
+                if locale != "ja-JP"
+                else f"「{topic_instance.topic}」をフォローしました。しばらく時間をおいて、もう一度テックキュレーターを開いてみてください。"
+                f"違う技術トピックをフォローしたい場合は、たとえば、「{example_topic}をフォロー」と言ってみてください。"
             )
-
-        speak_output = (
-            f"You are now following the topic '{topic_instance.topic}'. Please wait a moment and try reopening Tech Curator."
-            if locale != "ja-JP"
-            else f"「{topic_instance.topic}」をフォローしました。しばらく時間をおいて、もう一度テックキュレーターを開いてみてください。"
-        )
 
         # NOTE: トピックの登録により利用回数が1回減るため調整
         speak_output = append_usage_message(
@@ -190,7 +190,7 @@ class SetTopicIntentHandler(AbstractRequestHandler):
         )
         return (
             handler_input.response_builder.speak(speak_output)
-            .set_should_end_session(True)
+            .ask(speak_output)
             .response
         )
 
@@ -325,6 +325,13 @@ def append_usage_message(speak_output: str, remaining_usage: int, locale: str) -
             else f"{speak_output} 今月のフォロートピックの変更、および質問の残り回数は{remaining_usage}回です。"
         )
     return speak_output
+
+
+def get_example_topic(topic: str, locale: str) -> str:
+    if locale == "ja-JP":
+        return "AIエージェント" if topic == "生成AI" else "生成AI"
+    else:
+        return "AI Agent" if topic == "Generative AI" else "Generative AI"
 
 
 # The SkillBuilder object acts as the entry point for your skill, routing all request and response

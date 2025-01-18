@@ -84,14 +84,16 @@ class Topic:
                 f"Document with user_id '{user_id}' not found in collection '{Topic.COLLECTION_NAME}'."
             )
 
-        raw_topic = doc.get("raw_topic")
-        topic = doc.get("topic")
-        reading = doc.get("reading")
-        is_technical_term = doc.get("is_technical_term", False)
-        language_code = doc.get("language_code")
-        region_code = doc.get("region_code")
-        exclude_keywords = doc.get("exclude_keywords", [])
-        queries = doc.get("queries", [])
+        doc_data = doc.to_dict()
+
+        raw_topic = doc_data.get("raw_topic")
+        topic = doc_data.get("topic")
+        reading = doc_data.get("reading")
+        is_technical_term = doc_data.get("is_technical_term", False)
+        language_code = doc_data.get("language_code")
+        region_code = doc_data.get("region_code")
+        exclude_keywords = doc_data.get("exclude_keywords", [])
+        queries = doc_data.get("queries", [])
 
         return Topic(
             user_id=user_id,
