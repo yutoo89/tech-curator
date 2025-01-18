@@ -12,6 +12,7 @@ from ask_sdk_core.handler_input import HandlerInput
 from ask_sdk_model import Response
 import firebase_admin
 from firebase_admin import credentials, firestore
+import google.generativeai as genai
 
 from topic import Topic
 from access import Access
@@ -19,6 +20,9 @@ from trend import Trend, DocumentNotFoundError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+# GenAI initialization
+genai.configure(api_key=os.environ["GENAI_API_KEY"])
 
 # Firestore initialization
 if not firebase_admin._apps:
@@ -160,24 +164,40 @@ class SetTopicIntentHandler(AbstractRequestHandler):
             speak_output = append_usage_message("", trend.remaining_usage, locale)
             return handler_input.response_builder.speak(speak_output).response
 
-        self.set_topic(user_id, topic, locale)
+        topic_instance = self.set_topic(user_id, topic, locale)
+
+        if not topic_instance.is_technical_term:
+            speak_output = (
+                f"It seems that '{topic_instance.topic}' is not a technical term. Please tell us the technical topic you want to follow. For example, try saying 'Follow Generative AI'"
+                if locale != "ja-JP"
+                else f"「{topic_instance.topic}」は技術用語ではないようです。フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+            )
+            return (
+                handler_input.response_builder.speak(speak_output)
+                .ask(speak_output)
+                .response
+            )
+
         speak_output = (
-            f"{topic} has been followed. Please wait a moment and try reopening Tech Curator."
+            f"You are now following the topic '{topic_instance.topic}'. Please wait a moment and try reopening Tech Curator."
             if locale != "ja-JP"
-            else f"{topic}をフォローしました。しばらく時間をおいて、もう一度テックキュレーターを開いてみてください。"
+            else f"「{topic_instance.topic}」をフォローしました。しばらく時間をおいて、もう一度テックキュレーターを開いてみてください。"
         )
 
         # NOTE: トピックの登録により利用回数が1回減るため調整
-        speak_output = append_usage_message(speak_output, trend.remaining_usage - 1, locale)
+        speak_output = append_usage_message(
+            speak_output, trend.remaining_usage - 1, locale
+        )
         return (
             handler_input.response_builder.speak(speak_output)
             .set_should_end_session(True)
             .response
         )
 
-    def set_topic(self, user_id, topic, locale):
-        Topic.create(db, user_id, topic, locale)
+    def set_topic(self, user_id, topic, locale) -> Topic:
+        topic = Topic.create(db, user_id, topic, locale)
         Access.create_or_update(db, user_id)
+        return topic
 
 
 class HelpIntentHandler(AbstractRequestHandler):

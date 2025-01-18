@@ -1,5 +1,6 @@
 from typing import Union
 from firebase_admin import firestore
+from gemini_text_corrector import GeminiTextCorrector
 
 
 class DocumentNotFoundError(Exception):
@@ -11,12 +12,31 @@ class Topic:
     COLLECTION_NAME = "topics"
 
     def __init__(
-        self, user_id: str, raw_topic: str, topic: Union[str, None], locale: str
+        self,
+        user_id: str,
+        raw_topic: str,
+        topic: str,
+        language_code: str,
+        region_code: str,
+        reading: str,
+        is_technical_term: bool,
+        exclude_keywords: list[str] = None,
+        queries: list[str] = None,
     ):
+        if exclude_keywords is None:
+            exclude_keywords = []
+        if queries is None:
+            queries = []
         self.user_id = user_id
         self.raw_topic = raw_topic
         self.topic = topic
-        self.locale = locale
+        self.language_code = language_code
+        self.region_code = region_code
+        self.reading = reading
+        self.is_technical_term = is_technical_term
+        self.exclude_keywords = exclude_keywords
+        self.queries = queries
+        self.locale = f"{language_code}-{region_code}"
 
     @staticmethod
     def create(db: firestore.Client, user_id: str, raw_topic: str, locale: str) -> None:
@@ -26,7 +46,35 @@ class Topic:
         if doc.exists:
             doc_ref.delete()
 
-        doc_ref.set({"raw_topic": raw_topic, "locale": locale})
+        parts = locale.split("-")
+        if len(parts) != 2:
+            raise ValueError(
+                "Invalid locale format. Expected format: 'language-region'."
+            )
+        language_code, region_code = parts
+        corrector = GeminiTextCorrector("gemini-1.5-flash")
+        corrected_result = corrector.run(raw_topic, region_code)
+
+        doc_ref.set(
+            {
+                "raw_topic": raw_topic,
+                "topic": corrected_result["transformed_text"],
+                "reading": corrected_result["reading"],
+                "is_technical_term": corrected_result["is_technical_term"],
+                "language_code": language_code,
+                "region_code": region_code,
+                "locale": locale,
+            }
+        )
+        return Topic(
+            user_id,
+            raw_topic,
+            corrected_result["transformed_text"],
+            language_code,
+            region_code,
+            corrected_result["reading"],
+            corrected_result["is_technical_term"],
+        )
 
     @staticmethod
     def get(db: firestore.Client, user_id: str) -> "Topic":
@@ -38,11 +86,21 @@ class Topic:
 
         raw_topic = doc.get("raw_topic")
         topic = doc.get("topic")
-        locale = doc.get("locale")
+        reading = doc.get("reading")
+        is_technical_term = doc.get("is_technical_term", False)
+        language_code = doc.get("language_code")
+        region_code = doc.get("region_code")
+        exclude_keywords = doc.get("exclude_keywords", [])
+        queries = doc.get("queries", [])
 
         return Topic(
             user_id=user_id,
             raw_topic=raw_topic,
             topic=topic,
-            locale=locale,
+            language_code=language_code,
+            region_code=region_code,
+            reading=reading,
+            is_technical_term=is_technical_term,
+            exclude_keywords=exclude_keywords,
+            queries=queries,
         )
