@@ -16,10 +16,8 @@
           ],
           "name": "SetTopicIntent",
           "delegationStrategy": "ALWAYS",
-          "confirmationRequired": true,
-          "prompts": {
-            "confirmation": "Confirm.Intent.1249030950854"
-          }
+          "confirmationRequired": false,
+          "prompts": {}
         }
       ],
       "delegationStrategy": "ALWAYS"
@@ -199,7 +197,7 @@
         "variations": [
           {
             "type": "PlainText",
-            "value": "トピック「 {Topic} 」を 登録します。よろしいですか？"
+            "value": "{Topic} を登録します.よろしいですか？"
           }
         ],
         "id": "Confirm.Intent.1249030950854"

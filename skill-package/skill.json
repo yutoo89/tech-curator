@@ -64,9 +64,9 @@
             "information",
             "gathering"
           ],
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/6f9e/8b5e91273cc249c6bd8034fd5014e5fb/APP_ICON_LARGE?versionId=0GOkFEMbx.POa6EcjyCK4wO902_VAAAe&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250114T235427Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=10a0df33aef2c842794ec146c47592e21bf0ee45b5ba871f89df8e455eb94da1",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/6f9e/8b5e91273cc249c6bd8034fd5014e5fb/APP_ICON_LARGE?versionId=0GOkFEMbx.POa6EcjyCK4wO902_VAAAe&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250118T044730Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250118%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=c829ec30d3e8f6f4ff24dd5b1e1e81d8e75c62d273b74bd0fb2a6620954644d3",
           "name": "Tech-curator",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/a884/44f48413a69a444aa05949047d66963d/APP_ICON?versionId=_jLJFtIrQMgDI68sskAwa0a2Dp_inNZO&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250114T235427Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=820a011340ca32ffd465833d57a8369fa78f65bbd4a031ce3d60cbe05c26e7c4",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/a884/44f48413a69a444aa05949047d66963d/APP_ICON?versionId=_jLJFtIrQMgDI68sskAwa0a2Dp_inNZO&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250118T044730Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250118%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=3d1560318126bccce46962cb1d292b09e2ae610c97bbaaaab7a5220044f96003",
           "summary": "Tech-curator is a skill developed for lazy engineers to help them stay updated with the latest tech trends. It automatically collects technology trends related"
         },
         "ja-JP": {
@@ -90,9 +90,9 @@
             "技術動向",
             "情報収集"
           ],
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/cd48/777fc8f993644fe0ab033c6ea16f3529/APP_ICON_LARGE?versionId=tRUbNVGpS3Ds73I1ByrL32JsIItYzF2Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250114T235427Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=3814fdcdce6d9069b1e06fbeec1678a40f2c1d827ad6dd2ff0392ab7c6f8e3c2",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/cd48/777fc8f993644fe0ab033c6ea16f3529/APP_ICON_LARGE?versionId=tRUbNVGpS3Ds73I1ByrL32JsIItYzF2Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250118T044730Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250118%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=a0ff23e10730fc6cc8b9bd8c5f3e6d0e504afd015f0c0e741f715ec73c73487b",
           "name": "テックキュレーター",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/967f/a06fb2791f75496b8ee8d061e73c912e/APP_ICON?versionId=avq5X184OnHPMCGn45yA2nM4sCXSCIU7&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250114T235427Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=e53037e819f5c9bff25aab9325ea0b77f148eda55ec10e00b59a4c2f19bef397",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/967f/a06fb2791f75496b8ee8d061e73c912e/APP_ICON?versionId=avq5X184OnHPMCGn45yA2nM4sCXSCIU7&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250118T044730Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250118%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=3b72a109f60dafa63360071be6ddf1a77367039105342ff9de6d372339f9c643",
           "summary": "tech-curatorは、怠惰なエンジニア向けに開発された技術トレンドのキャッチアップスキルです。登録したトピックに関連する技術トレンドを自動で収集し、あなたのAlexaデバイスにお届けします。"
         }
       },

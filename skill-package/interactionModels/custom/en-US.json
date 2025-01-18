@@ -15,10 +15,8 @@
             }
           ],
           "name": "SetTopicIntent",
-          "confirmationRequired": true,
-          "prompts": {
-            "confirmation": "Confirm.Intent.1650391501523"
-          }
+          "confirmationRequired": false,
+          "prompts": {}
         }
       ],
       "delegationStrategy": "ALWAYS"
