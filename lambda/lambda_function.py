@@ -40,13 +40,22 @@ def trend_summary(news: News, locale: str) -> str:
         if locale != "ja-JP"
         else "テックキュレーターがニュースをお伝えします。"
     )
+    ai = ArticleQAHandler(
+        "gemini-1.5-flash", db, news.user_id, news.articles, news.language_code
+    )
+    question = (
+        f"Tell me about recent interesting topics related to {news.keyword}."
+        if locale != "ja-JP"
+        else f"{news.keyword}に関して、最近の興味深い話題を教えてください。"
+    )
+    answer = ai.generate_response(question)
     sample_question = (
         "If you want to know more details about this news, try saying something like 'Question, about XYZ.'"
         if locale != "ja-JP"
         else "このニュースの詳細を知りたい場合は「質問、ほげほげ。」のように言ってみてください。"
     )
 
-    speaks = [greeting, news.introduction, sample_question]
+    speaks = [greeting, answer, sample_question]
     return " ".join(speaks)
 
 
@@ -246,9 +255,8 @@ class QuestionIntentHandler(AbstractRequestHandler):
         query = slots["Query"].value if "Query" in slots else None
 
         news = News.get(db, user_id)
-        # TODO: 初期化時にnewsを使わないように修正
         ai = ArticleQAHandler(
-            "gemini-1.5-flash", db, user_id, news.introduction, news.articles
+            "gemini-1.5-flash", db, user_id, news.articles, news.language_code
         )
         speak_output = ai.generate_response(query)
 

@@ -8,18 +8,14 @@ class ArticleQAHandler:
         model_name: str,
         db: firestore.Client,
         user_id: str,
-        introduction: str,
         articles: list,
+        language_code: str,
     ):
         self.model = genai.GenerativeModel(model_name)
         self.db = db
         self.user_id = user_id
-        self.introduction = introduction
         self.articles = articles
-
-        self.save_conversation_history(
-            {"user": "最新の技術トピックを教えてください。", "ai": self.introduction}
-        )
+        self.language_code = language_code
 
     def get_recent_articles(self, limit: int = 5):
         articles_ref = self.db.collection("articles").document(self.user_id)
@@ -61,25 +57,35 @@ class ArticleQAHandler:
                 f"title: {article['title']}\nbody: {article['body'][:2000]}\n"
             )
 
-        # プロンプトを構築
-        conversation_history = []
-        print(conversation_items)
+        conversation_history_list = []
         for item in conversation_items:
-            conversation_history.append(f"user: {item['user']}")
-            conversation_history.append(f"ai: {item['ai']}")
-        conversation_history = "\n".join(conversation_history)
+            conversation_history_list.append(f"user: {item['user']}")
+            conversation_history_list.append(f"ai: {item['ai']}")
+        conversation_history_text = "\n".join(conversation_history_list)
+
         prompt_lines = [
-            "これまでの会話履歴と今回の質問、そして回答生成の参考になる記事を提供します。"
-            "今回の質問に対して簡潔かつ具体的に応答してください。",
-            "URLやコードを含まず、そのまま自然に発話できる応答を生成してください。",
-            "",
-            "conversation_history:",
-            conversation_history,
-            f"question: {question}",
-            "",
-            articles_section,
+            "これまでの会話履歴と今回の質問、そして回答生成の参考になる記事を提供します。",
+            "以下の条件に従い、質問に対する簡潔な回答を生成してください。",
+            "- ツール名などの具体的な固有名詞を必ず含めること",
+            "- URLやコード、括弧書きの補足など、音声で出力したときに理解しにくい表現は避けること",
         ]
 
+        if self.language_code == "ja":
+            prompt_lines.append(
+                "- 固有名詞は漢字やアルファベットではなくカタカナで表記すること"
+            )
+
+        prompt_lines.extend(
+            [
+                f"- 言語コード'{self.language_code}'で生成すること",
+                "",
+                "conversation_history:",
+                conversation_history_text,
+                f"question: {question}",
+                "",
+                articles_section,
+            ]
+        )
         prompt = "\n".join(prompt_lines)
 
         response = self.model.generate_content(prompt)
