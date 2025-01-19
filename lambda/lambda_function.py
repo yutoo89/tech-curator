@@ -16,7 +16,8 @@ import google.generativeai as genai
 
 from topic import Topic
 from access import Access
-from trend import Trend, DocumentNotFoundError
+from news import News, DocumentNotFoundError
+from article_qa_handler import ArticleQAHandler
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -32,37 +33,28 @@ if not firebase_admin._apps:
 db = firestore.client()
 
 
-def trend_summary(db: firestore.Client, user_id: str, locale: str, handler_input: HandlerInput) -> str:
-    try:
-        trend = Trend.get(db, user_id)
-        sample_question = (
-            "If you want to know more details about this news, try saying something like 'Question, about XYZ.'"
-            if locale != "ja-JP"
-            else "このニュースの詳細を知りたい場合は「質問、まるまる」のように言ってみてください。"
-        )
-        speaks = [
-            trend.title,
-            trend.body,
-            sample_question
-        ]
+def trend_summary(news: News, locale: str) -> str:
+    """ニュースの概要を返す"""
+    greeting = (
+        "Tech curators bring you the news."
+        if locale != "ja-JP"
+        else "テックキュレーターがニュースをお伝えします。"
+    )
+    sample_question = (
+        "If you want to know more details about this news, try saying something like 'Question, about XYZ.'"
+        if locale != "ja-JP"
+        else "このニュースの詳細を知りたい場合は「質問、ほげほげ。」のように言ってみてください。"
+    )
 
-        session_attributes = handler_input.attributes_manager.session_attributes
-        session_attributes["trend_body"] = trend.body
-
-        return ("." if locale != "ja-JP" else "。").join(speaks)
-    except DocumentNotFoundError:
-        return (
-            'Tell us the tech topic you want to follow. For example, say "Follow Generative AI."'
-            if locale != "ja-JP"
-            else "フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
-        )
+    speaks = [greeting, news.introduction, sample_question]
+    return " ".join(speaks)
 
 
 def topic_summary(db: firestore.Client, user_id: str, locale: str) -> str:
     try:
         topic = Topic.get(db, user_id)
-
         example_topic = get_example_topic(topic.topic, locale)
+
         if locale == "ja-JP":
             speaks = [
                 f"現在フォロー中のトピックは「{topic.topic}」です。",
@@ -87,17 +79,23 @@ class LaunchRequestHandler(AbstractRequestHandler):
     """スキル起動"""
 
     def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
-
         return ask_utils.is_request_type("LaunchRequest")(handler_input)
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
         user_id = handler_input.request_envelope.session.user.user_id
         locale = handler_input.request_envelope.request.locale
 
         Access.create_or_update(db, user_id)
-        speak_output = trend_summary(db, user_id, locale, handler_input)
+
+        try:
+            news = News.get(db, user_id)
+            speak_output = trend_summary(news, locale)
+        except DocumentNotFoundError:
+            speak_output = (
+                'Tell us the tech topic you want to follow. For example, say "Follow Generative AI."'
+                if locale != "ja-JP"
+                else "フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+            )
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -116,15 +114,25 @@ class GetTrendIntentHandler(AbstractRequestHandler):
         user_id = handler_input.request_envelope.session.user.user_id
         locale = handler_input.request_envelope.request.locale
 
-        trend = Trend.get(db, user_id)
-        if trend.remaining_usage == 0:
-            speak_output = append_usage_message("", trend.remaining_usage, locale)
+        try:
+            news = News.get(db, user_id)
+        except DocumentNotFoundError:
+            speak_output = (
+                'Tell us the tech topic you want to follow. For example, say "Follow Generative AI."'
+                if locale != "ja-JP"
+                else "フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+            )
+            return handler_input.response_builder.speak(speak_output).response
+
+        if news.remaining_usage == 0:
+            speak_output = append_usage_message("", news.remaining_usage, locale)
             return handler_input.response_builder.speak(speak_output).response
 
         Access.create_or_update(db, user_id)
-        speak_output = trend_summary(db, user_id, locale, handler_input)
 
-        speak_output = append_usage_message(speak_output, trend.remaining_usage, locale)
+        speak_output = trend_summary(news, locale)
+        speak_output = append_usage_message(speak_output, news.remaining_usage, locale)
+
         return (
             handler_input.response_builder.speak(speak_output)
             .ask(speak_output)
@@ -142,15 +150,25 @@ class GetTopicIntentHandler(AbstractRequestHandler):
         user_id = handler_input.request_envelope.session.user.user_id
         locale = handler_input.request_envelope.request.locale
 
-        trend = Trend.get(db, user_id)
-        if trend.remaining_usage == 0:
-            speak_output = append_usage_message("", trend.remaining_usage, locale)
+        # News取得（利用回数判定用）
+        try:
+            news = News.get(db, user_id)
+        except DocumentNotFoundError:
+            speak_output = (
+                'Tell us the tech topic you want to follow. For example, say "Follow Generative AI."'
+                if locale != "ja-JP"
+                else "フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+            )
+            return handler_input.response_builder.speak(speak_output).response
+
+        if news.remaining_usage == 0:
+            speak_output = append_usage_message("", news.remaining_usage, locale)
             return handler_input.response_builder.speak(speak_output).response
 
         Access.create_or_update(db, user_id)
         speak_output = topic_summary(db, user_id, locale)
+        speak_output = append_usage_message(speak_output, news.remaining_usage, locale)
 
-        speak_output = append_usage_message(speak_output, trend.remaining_usage, locale)
         return (
             handler_input.response_builder.speak(speak_output)
             .ask(speak_output)
@@ -170,14 +188,19 @@ class SetTopicIntentHandler(AbstractRequestHandler):
         topic = slots["Topic"].value if "Topic" in slots else None
         locale = handler_input.request_envelope.request.locale
 
-        trend = Trend.get(db, user_id)
-        if trend.remaining_usage == 0:
-            speak_output = append_usage_message("", trend.remaining_usage, locale)
-            return handler_input.response_builder.speak(speak_output).response
+        # News取得（利用回数判定用）
+        news = None
+        try:
+            news = News.get(db, user_id)
+            if news.remaining_usage == 0:
+                speak_output = append_usage_message("", news.remaining_usage, locale)
+                return handler_input.response_builder.speak(speak_output).response
+        except DocumentNotFoundError as e:
+            logger.error(f"News document not found for user_id {user_id}: {e}")
 
         topic_instance = self.set_topic(user_id, topic, locale)
-
         example_topic = get_example_topic(topic_instance.topic, locale)
+
         if not topic_instance.is_technical_term:
             speak_output = (
                 f"It seems that '{topic_instance.topic}' is not a technical term. Please tell us the technical topic you want to follow. For example, try saying 'Follow {example_topic}'."
@@ -194,9 +217,11 @@ class SetTopicIntentHandler(AbstractRequestHandler):
             )
 
         # NOTE: トピックの登録により利用回数が1回減るため調整
-        speak_output = append_usage_message(
-            speak_output, trend.remaining_usage - 1, locale
-        )
+        if news:
+            speak_output = append_usage_message(
+                speak_output, news.remaining_usage - 1, locale
+            )
+
         return (
             handler_input.response_builder.speak(speak_output)
             .ask(speak_output)
@@ -216,14 +241,16 @@ class QuestionIntentHandler(AbstractRequestHandler):
         return ask_utils.is_intent_name("QuestionIntent")(handler_input)
 
     def handle(self, handler_input):
-        session_attributes = handler_input.attributes_manager.session_attributes
+        user_id = handler_input.request_envelope.session.user.user_id
         slots = handler_input.request_envelope.request.intent.slots
         query = slots["Query"].value if "Query" in slots else None
-        trend_body = session_attributes.get("trend_body", None)
-        if trend_body:
-            speak_output = f"クエリは「{query}」、現在のトレンド内容は「{trend_body}」です。質問をどうぞ。"
-        else:
-            speak_output = "トレンド情報が見つかりませんでした。もう一度試してください。"
+
+        news = News.get(db, user_id)
+        # TODO: 初期化時にnewsを使わないように修正
+        ai = ArticleQAHandler(
+            "gemini-1.5-flash", db, user_id, news.introduction, news.articles
+        )
+        speak_output = ai.generate_response(query)
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -330,16 +357,6 @@ class TrendUsageExceededError(Exception):
     """Custom exception for when usage exceeds the limit."""
 
     pass
-
-
-def get_remaining_usage(db: firestore.Client, user_id: str) -> int:
-    """Fetch the remaining usage for the user."""
-    doc = db.collection(Trend.COLLECTION_NAME).document(user_id).get()
-    if not doc.exists:
-        return Trend.MONTHLY_LIMIT  # Default to the full limit if no document exists
-
-    remaining_usage = doc.get("remaining_usage", Trend.MONTHLY_LIMIT)
-    return remaining_usage
 
 
 def append_usage_message(speak_output: str, remaining_usage: int, locale: str) -> str:
