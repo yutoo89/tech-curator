@@ -50,9 +50,9 @@ def trend_summary(news: News, locale: str) -> str:
     )
     answer = ai.generate_response(question)
     sample_question = (
-        "If you want to know more details about this news, try saying something like 'Question, about XYZ.'"
+        "If you want to know more details about this news, try saying something like 'Question, What site was it featured on?'"
         if locale != "ja-JP"
-        else "このニュースの詳細を知りたい場合は「質問、ほげほげ。」のように言ってみてください。"
+        else "このニュースの詳細を知りたい場合は「質問、どこのサイトで紹介されていましたか?」のように言ってみてください。"
     )
 
     speaks = [greeting, answer, sample_question]

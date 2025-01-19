@@ -1,4 +1,3 @@
-from typing import Union
 from firebase_admin import firestore
 from gemini_text_corrector import GeminiTextCorrector
 
