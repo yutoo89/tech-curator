@@ -179,7 +179,7 @@
           ],
           "name": "QuestionIntent",
           "samples": [
-            "アレクサ {Query} "
+            "質問 {Query} "
           ]
         }
       ],

@@ -170,7 +170,7 @@
           ],
           "name": "QuestionIntent",
           "samples": [
-            "Alexa {Query}"
+            "question {Query}"
           ]
         }
       ],

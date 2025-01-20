@@ -11,6 +11,10 @@
     },
     "manifestVersion": "1.0",
     "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "containsAds": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
       "locales": {
         "en-US": {
           "privacyPolicyUrl": "https://github.com/yutoo89/tech-curator/blob/main/PRIVACY_POLICY.md",
@@ -24,7 +28,8 @@
       "shoppingKit": {
         "isAmazonAssociatesOnAlexaEnabled": false,
         "isShoppingActionsEnabled": false
-      }
+      },
+      "usesPersonalInfo": false
     },
     "publishingInformation": {
       "automaticDistribution": {
@@ -39,7 +44,7 @@
           "examplePhrases": [
             "Alexa, open tech-curator",
             "Follow Generative AI",
-            "Change the Topics to Follow"
+            "Question, What site was it featured on?"
           ],
           "keywords": [
             "news",
@@ -64,9 +69,9 @@
             "information",
             "gathering"
           ],
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/6f9e/8b5e91273cc249c6bd8034fd5014e5fb/APP_ICON_LARGE?versionId=0GOkFEMbx.POa6EcjyCK4wO902_VAAAe&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250118T082327Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604798&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250118%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=28cc60079a260e9822b3b5a41de65b7c73708eaaaccfddabfe4ca31ffc0895cc",
-          "name": "Tech-curator",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/a884/44f48413a69a444aa05949047d66963d/APP_ICON?versionId=_jLJFtIrQMgDI68sskAwa0a2Dp_inNZO&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250118T082327Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250118%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=35f4b6e1189dc48ff667b52dbcf07d6efc48166947344d28fa6095555ad6dae1",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/6f9e/8b5e91273cc249c6bd8034fd5014e5fb/APP_ICON_LARGE?versionId=0GOkFEMbx.POa6EcjyCK4wO902_VAAAe&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250120T123447Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250120%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=8beed9da587f1a74f0c28aeb2c0234686d0774cf5060955d13146dbe1f359eed",
+          "name": "tech-curator",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/a884/44f48413a69a444aa05949047d66963d/APP_ICON?versionId=_jLJFtIrQMgDI68sskAwa0a2Dp_inNZO&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250120T123447Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250120%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=a8cf49afaa4d69ea9bf247181c7e2500cc413ada9cd74687b344ad63d0114064",
           "summary": "Tech-curator is a skill developed for lazy engineers to help them stay updated with the latest tech trends. It automatically collects technology trends related"
         },
         "ja-JP": {
@@ -74,7 +79,7 @@
           "examplePhrases": [
             "アレクサ、テックキュレーターを開いて",
             "生成AIをフォロー",
-            "フォローするトピックを変更"
+            "質問、どこのサイトで紹介されていましたか?"
           ],
           "keywords": [
             "ニュース",
@@ -90,9 +95,9 @@
             "技術動向",
             "情報収集"
           ],
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/cd48/777fc8f993644fe0ab033c6ea16f3529/APP_ICON_LARGE?versionId=tRUbNVGpS3Ds73I1ByrL32JsIItYzF2Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250118T082327Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250118%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=31d6c8fb59c30ce5b672cbbd979ab9dca43bb2459e4d1b24c966b7c5428851f7",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/cd48/777fc8f993644fe0ab033c6ea16f3529/APP_ICON_LARGE?versionId=tRUbNVGpS3Ds73I1ByrL32JsIItYzF2Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250120T123447Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250120%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=6fed0805b8c65ee32fedee9650cf83c674b2503bea0f9d7be47831f0f3128e18",
           "name": "テックキュレーター",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/967f/a06fb2791f75496b8ee8d061e73c912e/APP_ICON?versionId=avq5X184OnHPMCGn45yA2nM4sCXSCIU7&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250118T082327Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250118%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=4cf034e128fcc0267c4ae42f83fcb510bdff9559cf08b1eb2ba186f9249306ec",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/967f/a06fb2791f75496b8ee8d061e73c912e/APP_ICON?versionId=avq5X184OnHPMCGn45yA2nM4sCXSCIU7&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250120T123447Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250120%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=784dce507457900ec9df728430e231510267d6372574a0463c7df2d399340110",
           "summary": "tech-curatorは、怠惰なエンジニア向けに開発された技術トレンドのキャッチアップスキルです。登録したトピックに関連する技術トレンドを自動で収集し、あなたのAlexaデバイスにお届けします。"
         }
       },
