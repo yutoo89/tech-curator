@@ -219,10 +219,10 @@ class SetTopicIntentHandler(AbstractRequestHandler):
             )
         else:
             speak_output = (
-                f"You are now following the topic '{topic_instance.topic}'. Please wait a moment and try reopening Tech Curator. "
+                f"You are now following the topic '{topic_instance.topic}'. Wait a moment and then say 'Play the news'."
                 f"If you want to follow a different tech topic, please say something like 'Follow {example_topic}'."
                 if locale != "ja-JP"
-                else f"「{topic_instance.topic}」をフォローしました。しばらく時間をおいて、もう一度テックキュレーターを開いてみてください。"
+                else f"「{topic_instance.topic}」をフォローしました。しばらく時間をおいて、「ニュースを再生」と言ってみてください。"
                 f"違う技術トピックをフォローしたい場合は、たとえば、「{example_topic}をフォロー」と言ってみてください。"
             )
 
