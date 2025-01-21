@@ -36,9 +36,9 @@ db = firestore.client()
 def trend_summary(news: News, locale: str) -> str:
     """ニュースの概要を返す"""
     greeting = (
-        "Tech curators bring you the news."
+        f"Tech curators will bring you the news of '{news.keyword}'."
         if locale != "ja-JP"
-        else "テックキュレーターがニュースをお伝えします。"
+        else f"テックキュレーターが「{news.keyword}」のニュースをお伝えします。"
     )
     ai = ArticleQAHandler(
         "gemini-1.5-flash", db, news.user_id, news.articles, news.language_code
@@ -102,10 +102,10 @@ class LaunchRequestHandler(AbstractRequestHandler):
             speak_output = trend_summary(news, locale)
         except DocumentNotFoundError:
             speak_output = (
-                'Tell us the tech topic you want to follow. For example, say "Follow Generative AI."'
+                'Tell us the tech topic you want to follow. For example, say "Follow AI Agent."'
                 if locale != "ja-JP"
-                else "フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
-            )
+                else "フォローしたい技術トピックを教えてください。たとえば、「AIエージェントをフォロー」と言ってみてください。"
+            )       
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -128,9 +128,9 @@ class GetTrendIntentHandler(AbstractRequestHandler):
             news = News.get(db, user_id)
         except DocumentNotFoundError:
             speak_output = (
-                'Tell us the tech topic you want to follow. For example, say "Follow Generative AI."'
+                'Tell us the tech topic you want to follow. For example, say "Follow AI Agent."'
                 if locale != "ja-JP"
-                else "フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
+                else "フォローしたい技術トピックを教えてください。たとえば、「AIエージェントをフォロー」と言ってみてください。"
             )
             return handler_input.response_builder.speak(speak_output).response
 
