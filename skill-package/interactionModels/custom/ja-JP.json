@@ -97,7 +97,7 @@
         },
         {
           "slots": [],
-          "name": "GetTrendIntent",
+          "name": "GetNewsIntent",
           "samples": [
             "もう一度",
             "ニュースを再生",

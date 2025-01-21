@@ -114,11 +114,11 @@ class LaunchRequestHandler(AbstractRequestHandler):
         )
 
 
-class GetTrendIntentHandler(AbstractRequestHandler):
+class GetNewsIntentHandler(AbstractRequestHandler):
     """ニュース再生"""
 
     def can_handle(self, handler_input):
-        return ask_utils.is_intent_name("GetTrendIntent")(handler_input)
+        return ask_utils.is_intent_name("GetNewsIntent")(handler_input)
 
     def handle(self, handler_input):
         user_id = handler_input.request_envelope.session.user.user_id
@@ -411,7 +411,7 @@ sb = SkillBuilder()
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(SetTopicIntentHandler())
 sb.add_request_handler(GetTopicIntentHandler())
-sb.add_request_handler(GetTrendIntentHandler())
+sb.add_request_handler(GetNewsIntentHandler())
 sb.add_request_handler(QuestionIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())

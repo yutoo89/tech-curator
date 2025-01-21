@@ -95,7 +95,7 @@
         },
         {
           "slots": [],
-          "name": "GetTrendIntent",
+          "name": "GetNewsIntent",
           "samples": [
             "Repeat",
             "Play the news again",
