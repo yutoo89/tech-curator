@@ -48,6 +48,7 @@ def trend_summary(news: News, locale: str) -> str:
         if locale != "ja-JP"
         else f"{news.keyword}に関して、最近の興味深い話題を教えてください。"
     )
+    ai.delete_conversation_history()
     answer = ai.generate_response(question)
     sample_question = (
         "If you want to know more details about this news, try saying something like 'Question, What site was it featured on?'"
