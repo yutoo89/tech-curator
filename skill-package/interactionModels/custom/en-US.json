@@ -82,6 +82,7 @@
           "slots": [],
           "name": "GetTopicIntent",
           "samples": [
+            "Follow different topic",
             "I want to change the topic",
             "What am I following now",
             "Show me my current topics",
