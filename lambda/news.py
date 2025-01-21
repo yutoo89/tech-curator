@@ -108,3 +108,23 @@ class News:
             last_reset_date=last_reset_date,
             doc_ref=doc_ref,
         )
+
+    def increment_usage(self):
+        if self.remaining_usage <= 0:
+            print(f"[INFO] User {self.user_id} has reached the monthly limit.")
+            return False
+
+        self.monthly_usage += 1
+        self.remaining_usage -= 1
+
+        self.doc_ref.set(
+            {
+                "monthly_usage": self.monthly_usage,
+                "remaining_usage": self.remaining_usage,
+            },
+            merge=True,
+        )
+        print(
+            f"[INFO] User {self.user_id} usage incremented. Remaining: {self.remaining_usage}"
+        )
+        return True

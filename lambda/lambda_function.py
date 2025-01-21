@@ -254,11 +254,21 @@ class QuestionIntentHandler(AbstractRequestHandler):
         slots = handler_input.request_envelope.request.intent.slots
         query = slots["Query"].value if "Query" in slots else None
 
-        news = News.get(db, user_id)
+        news = None
+        try:
+            news = News.get(db, user_id)
+            if news.remaining_usage == 0:
+                locale = handler_input.request_envelope.request.locale
+                speak_output = append_usage_message("", news.remaining_usage, locale)
+                return handler_input.response_builder.speak(speak_output).response
+        except DocumentNotFoundError as e:
+            logger.error(f"News document not found for user_id {user_id}: {e}")
+
         ai = ArticleQAHandler(
             "gemini-1.5-flash", db, user_id, news.articles, news.language_code
         )
         speak_output = ai.generate_response(query)
+        news.increment_usage()
 
         return (
             handler_input.response_builder.speak(speak_output)
