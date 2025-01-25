@@ -105,7 +105,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
                 'Tell us the tech topic you want to follow. For example, say "Follow AI Agent."'
                 if locale != "ja-JP"
                 else "フォローしたい技術トピックを教えてください。たとえば、「AIエージェントをフォロー」と言ってみてください。"
-            )       
+            )
 
         return (
             handler_input.response_builder.speak(speak_output)
