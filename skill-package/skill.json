@@ -3,7 +3,7 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "uri": "arn:aws:lambda:ap-northeast-1:288761741657:function:ask-trend-curator-default-default-1735471545351"
+          "uri": "arn:aws:lambda:ap-northeast-1:288761741657:function:ask-tech-curator-default-default-1737885874079"
         },
         "interfaces": [],
         "locales": {}
