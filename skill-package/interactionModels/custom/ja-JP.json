@@ -1,27 +1,5 @@
 {
   "interactionModel": {
-    "dialog": {
-      "intents": [
-        {
-          "slots": [
-            {
-              "name": "Topic",
-              "elicitationRequired": true,
-              "type": "AMAZON.SearchQuery",
-              "confirmationRequired": false,
-              "prompts": {
-                "elicitation": "Elicit.Slot.64683699239.482354061488"
-              }
-            }
-          ],
-          "name": "SetTopicIntent",
-          "delegationStrategy": "ALWAYS",
-          "confirmationRequired": false,
-          "prompts": {}
-        }
-      ],
-      "delegationStrategy": "ALWAYS"
-    },
     "languageModel": {
       "intents": [
         {
@@ -49,48 +27,8 @@
           ]
         },
         {
-          "slots": [
-            {
-              "name": "Topic",
-              "type": "AMAZON.SearchQuery",
-              "samples": [
-                "{Topic} のニュースを教えてください",
-                "{Topic} をフォローしてください",
-                "{Topic} をフォロー"
-              ]
-            }
-          ],
-          "name": "SetTopicIntent",
-          "samples": [
-            "{Topic} をフォロー",
-            "{Topic} をフォローしてください",
-            "{Topic} のフォローを開始"
-          ]
-        },
-        {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
-        },
-        {
-          "slots": [],
-          "name": "GetNewsIntent",
-          "samples": [
-            "ニュースを聞かせて",
-            "今日のニュース",
-            "ニュースを再生"
-          ]
-        },
-        {
-          "slots": [],
-          "name": "GetTopicIntent",
-          "samples": [
-            "別のトピックをフォロー",
-            "トピックを変更したい",
-            "トピックを確認",
-            "現在のフォローを確認",
-            "何をフォローしてますか",
-            "今のトピックは何ですか"
-          ]
         },
         {
           "slots": [
@@ -101,43 +39,13 @@
           ],
           "name": "QuestionIntent",
           "samples": [
-            "{Query} を教えて",
-            "{Query} について",
+            "テック {Query}",
             "質問 {Query} "
           ]
         }
       ],
       "types": [],
       "invocationName": "テックキュレーター"
-    },
-    "prompts": [
-      {
-        "variations": [
-          {
-            "type": "PlainText",
-            "value": "フォローしたい技術トピックを教えてください。たとえば、「生成AIをフォロー」と言ってみてください。"
-          }
-        ],
-        "id": "Elicit.Slot.64683699239.482354061488"
-      },
-      {
-        "variations": [
-          {
-            "type": "PlainText",
-            "value": "詳しく知りたいニュースの番号を教えてください。"
-          }
-        ],
-        "id": "Elicit.Slot.1461636781301.1453351771192"
-      },
-      {
-        "variations": [
-          {
-            "type": "PlainText",
-            "value": "{Topic} を登録します.よろしいですか？"
-          }
-        ],
-        "id": "Confirm.Intent.1249030950854"
-      }
-    ]
+    }
   }
 }
