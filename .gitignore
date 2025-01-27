@@ -2,3 +2,4 @@
 .DS_Store
 .venv
 .envrc
+lambda/__pycache__

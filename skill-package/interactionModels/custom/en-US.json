@@ -1,26 +1,5 @@
 {
   "interactionModel": {
-    "dialog": {
-      "intents": [
-        {
-          "slots": [
-            {
-              "name": "Topic",
-              "elicitationRequired": true,
-              "type": "AMAZON.SearchQuery",
-              "confirmationRequired": false,
-              "prompts": {
-                "elicitation": "Elicit.Slot.235711947139.874932121073"
-              }
-            }
-          ],
-          "name": "SetTopicIntent",
-          "confirmationRequired": false,
-          "prompts": {}
-        }
-      ],
-      "delegationStrategy": "ALWAYS"
-    },
     "languageModel": {
       "intents": [
         {
@@ -49,46 +28,8 @@
           ]
         },
         {
-          "slots": [
-            {
-              "name": "Topic",
-              "type": "AMAZON.SearchQuery"
-            }
-          ],
-          "name": "SetTopicIntent",
-          "samples": [
-            "Follow {Topic}",
-            "Please follow {Topic}",
-            "Start following {Topic}",
-            "I'd like to follow {Topic}",
-            "Add {Topic} to my topics"
-          ]
-        },
-        {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
-        },
-        {
-          "slots": [],
-          "name": "GetNewsIntent",
-          "samples": [
-            "Tell me the news",
-            "What's today's news",
-            "Play the news",
-            "Give me the latest news"
-          ]
-        },
-        {
-          "slots": [],
-          "name": "GetTopicIntent",
-          "samples": [
-            "Follow different topic",
-            "I want to change the topic",
-            "What am I following now",
-            "Show me my current topics",
-            "What topics am I following",
-            "Check my current topics"
-          ]
         },
         {
           "slots": [
@@ -99,35 +40,13 @@
           ],
           "name": "QuestionIntent",
           "samples": [
-            "Tell me about {Query}",
-            "What's the information on {Query}",
-            "I have a question about {Query}",
-            "Can you explain {Query}"
+            "Tech {Query}",
+            "Question {Query}"
           ]
         }
       ],
       "types": [],
       "invocationName": "tech curator"
-    },
-    "prompts": [
-      {
-        "variations": [
-          {
-            "type": "PlainText",
-            "value": "Which topic would you like to follow?"
-          }
-        ],
-        "id": "Elicit.Slot.235711947139.874932121073"
-      },
-      {
-        "variations": [
-          {
-            "type": "PlainText",
-            "value": "Would you like to subscribe to {Topic} ?"
-          }
-        ],
-        "id": "Confirm.Intent.1650391501523"
-      }
-    ]
+    }
   }
 }
