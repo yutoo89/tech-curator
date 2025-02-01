@@ -106,6 +106,29 @@ class AnswerIntentHandler(AbstractRequestHandler):
         return response_builder.response
 
 
+class NewsIntentHandler(AbstractRequestHandler):
+    """ニュースの再生"""
+
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("NewsIntent")(handler_input)
+
+    def handle(self, handler_input):
+        user_id = handler_input.request_envelope.session.user.user_id
+        locale = handler_input.request_envelope.request.locale
+        language_code = get_language_code(locale)
+
+        speak, ask = AlexaHandler.play_news(
+            user_id=user_id, language_code=language_code, db=db
+        )
+
+        response_builder = handler_input.response_builder.speak(speak)
+
+        if ask is not None:
+            response_builder.ask(ask)
+
+        return response_builder.response
+
+
 class HelpIntentHandler(AbstractRequestHandler):
     """Handler for Help Intent."""
 
@@ -209,6 +232,7 @@ sb = SkillBuilder()
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(QuestionIntentHandler())
 sb.add_request_handler(AnswerIntentHandler())
+sb.add_request_handler(NewsIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())

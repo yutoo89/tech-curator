@@ -51,6 +51,16 @@
             "Play answer",
             "Answer"
           ]
+        },
+        {
+          "slots": [],
+          "name": "NewsIntent",
+          "samples": [
+            "Play the news",
+            "Play today news",
+            "Play the news again",
+            "Tell me today news"
+          ]
         }
       ],
       "types": [],
