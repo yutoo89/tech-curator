@@ -43,6 +43,14 @@
             "Tech {Query}",
             "Question {Query}"
           ]
+        },
+        {
+          "slots": [],
+          "name": "AnswerIntent",
+          "samples": [
+            "Play answer",
+            "Answer"
+          ]
         }
       ],
       "types": [],

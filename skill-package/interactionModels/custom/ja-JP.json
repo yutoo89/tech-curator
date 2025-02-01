@@ -42,6 +42,14 @@
             "テック {Query}",
             "質問 {Query} "
           ]
+        },
+        {
+          "slots": [],
+          "name": "AnswerIntent",
+          "samples": [
+            "回答を再生",
+            "回答"
+          ]
         }
       ],
       "types": [],

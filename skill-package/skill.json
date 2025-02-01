@@ -3,7 +3,7 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "uri": "arn:aws:lambda:ap-northeast-1:288761741657:function:ask-tech-curator-default-default-1737885874079"
+          "uri": "arn:aws:lambda:ap-northeast-1:288761741657:function:ask-trend-curator-default-default-1735471545351"
         },
         "interfaces": [],
         "locales": {}
@@ -69,9 +69,9 @@
             "information",
             "gathering"
           ],
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/6f9e/8b5e91273cc249c6bd8034fd5014e5fb/APP_ICON_LARGE?versionId=0GOkFEMbx.POa6EcjyCK4wO902_VAAAe&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250126T120232Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=a7a3aadc273e6a54ed2f7b89ec32268106fb4f3a8ffda19ead4a45268c299a48",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/6f9e/8b5e91273cc249c6bd8034fd5014e5fb/APP_ICON_LARGE?versionId=0GOkFEMbx.POa6EcjyCK4wO902_VAAAe&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250201T003132Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=70165c5f9cefbba134472c205290a576c0c0910dfca2ac4aa2c9009b30b16366",
           "name": "tech-curator",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/a884/44f48413a69a444aa05949047d66963d/APP_ICON?versionId=_jLJFtIrQMgDI68sskAwa0a2Dp_inNZO&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250126T120232Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=39550f85b21581b96818ee5673ab7cd766c0706f990eccf7ec0d969437feb5f0",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/a884/44f48413a69a444aa05949047d66963d/APP_ICON?versionId=_jLJFtIrQMgDI68sskAwa0a2Dp_inNZO&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250201T003132Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=816911433e073e8c89269eeba6d6550e4bf8e86852d517924bf9dc15af85d120",
           "summary": "Tech-curator is a skill developed for lazy engineers to help them stay updated with the latest tech trends. It automatically collects technology trends related"
         },
         "ja-JP": {
@@ -95,9 +95,9 @@
             "技術動向",
             "情報収集"
           ],
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/cd48/777fc8f993644fe0ab033c6ea16f3529/APP_ICON_LARGE?versionId=tRUbNVGpS3Ds73I1ByrL32JsIItYzF2Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250126T120232Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604798&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=b830c14c01fd154e0f6f7392260f66efbb9b06e9a3a1ff00c5aef2e6490a8b85",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/cd48/777fc8f993644fe0ab033c6ea16f3529/APP_ICON_LARGE?versionId=tRUbNVGpS3Ds73I1ByrL32JsIItYzF2Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250201T003132Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=be80ba5fd5a736067c24008d494d2035c9b3dbba5c5473c04b04f5a1549751af",
           "name": "テックキュレーター",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/967f/a06fb2791f75496b8ee8d061e73c912e/APP_ICON?versionId=avq5X184OnHPMCGn45yA2nM4sCXSCIU7&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250126T120232Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=bf472d0e8319c5254f6e77a82de6e56dec000dc39733a9e97c9a51de5342bf6a",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/967f/a06fb2791f75496b8ee8d061e73c912e/APP_ICON?versionId=avq5X184OnHPMCGn45yA2nM4sCXSCIU7&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250201T003132Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=fc4dc1592dddcb908c5bc5f7b971c909929329bd54b29a79e443c952202be591",
           "summary": "tech-curatorは、怠惰なエンジニア向けに開発された技術トレンドのキャッチアップスキルです。登録したトピックに関連する技術トレンドを自動で収集し、あなたのAlexaデバイスにお届けします。"
         }
       },
