@@ -13,7 +13,7 @@ from ask_sdk_model import Response
 import firebase_admin
 from firebase_admin import credentials, firestore
 import google.generativeai as genai
-from rag_answer_generator import RAGAnswerGenerator
+from alexa_handler import AlexaHandler
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -29,7 +29,7 @@ if not firebase_admin._apps:
 db = firestore.client()
 
 
-def language_code(locale: str):
+def get_language_code(locale: str):
     parts = locale.split("-")
     if len(parts) != 2:
         raise ValueError("Invalid locale format. Expected format: 'language-region'.")
@@ -44,17 +44,18 @@ class LaunchRequestHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         user_id = handler_input.request_envelope.session.user.user_id
         locale = handler_input.request_envelope.request.locale
+        language_code = get_language_code(locale)
 
-        rag = RAGAnswerGenerator(db)
-        speak_output = rag.generate_answer(
-            user_id, user_message=None, language_code=language_code(locale)
+        speak, ask = AlexaHandler.play_news(
+            user_id=user_id, language_code=language_code, db=db
         )
 
-        return (
-            handler_input.response_builder.speak(speak_output)
-            .ask(speak_output)
-            .response
-        )
+        response_builder = handler_input.response_builder.speak(speak)
+
+        if ask is not None:
+            response_builder.ask(ask)
+
+        return response_builder.response
 
 
 class QuestionIntentHandler(AbstractRequestHandler):
@@ -68,17 +69,64 @@ class QuestionIntentHandler(AbstractRequestHandler):
         slots = handler_input.request_envelope.request.intent.slots
         query = slots["Query"].value if "Query" in slots else None
         locale = handler_input.request_envelope.request.locale
+        language_code = get_language_code(locale)
 
-        rag = RAGAnswerGenerator(db)
-        speak_output = rag.generate_answer(
-            user_id, user_message=query, language_code=language_code(locale)
+        speak, ask = AlexaHandler.receive_question(
+            user_id=user_id, language_code=language_code, question=query, db=db
         )
 
-        return (
-            handler_input.response_builder.speak(speak_output)
-            .ask(speak_output)
-            .response
+        response_builder = handler_input.response_builder.speak(speak)
+
+        if ask is not None:
+            response_builder.ask(ask)
+
+        return response_builder.response
+
+
+class AnswerIntentHandler(AbstractRequestHandler):
+    """質問の回答"""
+
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("AnswerIntent")(handler_input)
+
+    def handle(self, handler_input):
+        user_id = handler_input.request_envelope.session.user.user_id
+        locale = handler_input.request_envelope.request.locale
+        language_code = get_language_code(locale)
+
+        speak, ask = AlexaHandler.answer(
+            user_id=user_id, language_code=language_code, db=db
         )
+
+        response_builder = handler_input.response_builder.speak(speak)
+
+        if ask is not None:
+            response_builder.ask(ask)
+
+        return response_builder.response
+
+
+class NewsIntentHandler(AbstractRequestHandler):
+    """ニュースの再生"""
+
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("NewsIntent")(handler_input)
+
+    def handle(self, handler_input):
+        user_id = handler_input.request_envelope.session.user.user_id
+        locale = handler_input.request_envelope.request.locale
+        language_code = get_language_code(locale)
+
+        speak, ask = AlexaHandler.play_news(
+            user_id=user_id, language_code=language_code, db=db
+        )
+
+        response_builder = handler_input.response_builder.speak(speak)
+
+        if ask is not None:
+            response_builder.ask(ask)
+
+        return response_builder.response
 
 
 class HelpIntentHandler(AbstractRequestHandler):
@@ -183,6 +231,8 @@ sb = SkillBuilder()
 
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(QuestionIntentHandler())
+sb.add_request_handler(AnswerIntentHandler())
+sb.add_request_handler(NewsIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())

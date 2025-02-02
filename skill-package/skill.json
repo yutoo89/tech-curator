@@ -3,7 +3,7 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "uri": "arn:aws:lambda:ap-northeast-1:288761741657:function:ask-tech-curator-default-default-1737885874079"
+          "uri": "arn:aws:lambda:ap-northeast-1:288761741657:function:ask-trend-curator-default-default-1735471545351"
         },
         "interfaces": [],
         "locales": {}
@@ -40,11 +40,10 @@
       "isAvailableWorldwide": true,
       "locales": {
         "en-US": {
-          "description": "tech-curator is a skill designed for lazy engineers to help them stay updated on technology trends. It automatically collects technology trends related to your registered topics and delivers them directly to your Alexa device.\n\n## Features\n\n### Seamless integration into daily life:\n- No need to open emails or browsers yourself.\n- Plays news triggered by your natural daily actions.\n\n### Wide-ranging and unbiased search:\n- Based on your registered keywords, AI generates related keywords and performs extensive query searches.\n- Efficiently collects new articles from engineering-focused websites both domestically and internationally.\n\n### Selection of important news:\n- AI selects the most relevant news from the search results.\n- Examples: Themes covered by multiple articles or new releases from major companies.\n\n### Noise reduction and efficiency:\n- By integrating information from multiple sources and generating news with AI, it eliminates duplication and redundant information.\n\n## How to Use\n\n1. **Play the news**\n   Launch the skill to listen to the latest technology-related news.\n   Example: \"Alexa, open tech-curator.\"\n\n2. **Ask about technology trends**\n   Search the latest articles and get answers to your questions.\n   Example: \"Tech, are there any news updates about AI agents?\"",
+          "description": "tech-curator is a skill developed for lazy engineers to stay updated with technology trends. It automatically collects the latest tech news and delivers them to your Alexa device.\n\n## Features\nSeamless Integration into Daily Life:\n- No need to open emails or browsers manually.\n- News playback can be triggered naturally by your daily routine.\n\nUnbiased and Extensive Search:\n- AI gathers technology news from reliable domestic and international sources.\n- Provides a comprehensive view of the industry's latest trends without bias.\n\nSelection of Important News:\n- AI filters and selects the most crucial news from search results.\n- Examples: Topics covered by multiple articles, major company releases, etc.\n\nNoise Reduction and Efficiency:\n- AI consolidates multiple sources and eliminates duplicates to provide concise news updates.\n\n## How to Use\n\n1. Play News\nActivate the skill to hear the latest tech news.\nExample: \"Alexa, open tech curator.\"\nExample: \"Play the news.\"\n\n2. Ask About Tech Trends\nSearch for the latest articles and get answers to your questions.\nExample: \"Question, Do you have any news about AI agents?\"\nExample: \"Play answer\"",
           "examplePhrases": [
             "Alexa, open tech-curator",
-            "Tech, are there any news updates about AI agents?",
-            ""
+            "Question, Do you have any news about AI agents?"
           ],
           "keywords": [
             "news",
@@ -69,17 +68,16 @@
             "information",
             "gathering"
           ],
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/6f9e/8b5e91273cc249c6bd8034fd5014e5fb/APP_ICON_LARGE?versionId=0GOkFEMbx.POa6EcjyCK4wO902_VAAAe&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250126T120232Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=a7a3aadc273e6a54ed2f7b89ec32268106fb4f3a8ffda19ead4a45268c299a48",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/6f9e/8b5e91273cc249c6bd8034fd5014e5fb/APP_ICON_LARGE?versionId=0GOkFEMbx.POa6EcjyCK4wO902_VAAAe&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250201T214529Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=331b3d725a37e5bf5fde29b4372d5c32ad54bf42e4c2c94d02b6048ac5be3909",
           "name": "tech-curator",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/a884/44f48413a69a444aa05949047d66963d/APP_ICON?versionId=_jLJFtIrQMgDI68sskAwa0a2Dp_inNZO&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250126T120232Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=39550f85b21581b96818ee5673ab7cd766c0706f990eccf7ec0d969437feb5f0",
-          "summary": "Tech-curator is a skill developed for lazy engineers to help them stay updated with the latest tech trends. It automatically collects technology trends related"
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/a884/44f48413a69a444aa05949047d66963d/APP_ICON?versionId=_jLJFtIrQMgDI68sskAwa0a2Dp_inNZO&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250201T214529Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=69753c5fa1619a30889f14b8499250e022048cde3541080123393afb5f9ab2e0",
+          "summary": "tech-curator helps lazy engineers stay updated on tech trends by automatically collecting the latest news and delivering it to their Alexa device."
         },
         "ja-JP": {
-          "description": "tech-curatorは、怠惰なエンジニア向けに開発された技術トレンドのキャッチアップスキルです。\n登録したトピックに関連する技術トレンドを自動で収集し、あなたのAlexaデバイスにお届けします。\n\n## 特徴\n\n生活になじむ設計:\n- メールやブラウザを自分で開く必要がありません\n- 毎日の自然な行動をトリガーにニュースを再生できます\n\n偏りのない広範囲な検索:\n- 登録したキーワードを基に、AIが関連キーワードを生成して広範囲なクエリ検索を実行します\n- 国内外のエンジニア向け情報サイトから新着記事を効率的に収集します\n\n重要なニュースの選択:\n- AIが検索結果の中から特に重要なニュースを選択します\n- 例: 複数の記事で取り上げられたテーマや大手企業の新リリースなど\n\nノイズの排除と効率化:\n- 複数のソースからの情報を統合し、AIがニュースを生成することで、重複や冗長な情報を排除します\n\n## 使い方\n\n1. ニュースの再生\nスキルを起動すると最新の技術関連ニュースを再生します。\n例: 「アレクサ、テックキュレーターを開いて」\n\n2. 技術トレンドに関する質問\n最新の記事を検索して質問に回答します。\n例: 「テック、AIエージェント関連のニュースはありますか？」",
+          "description": "tech-curatorは、怠惰なエンジニア向けに開発された技術トレンドのキャッチアップスキルです。\n最新の技術トレンドを自動で収集し、あなたのAlexaデバイスにお届けします。\n\n## 特徴\n\n生活になじむ設計:\n- メールやブラウザを自分で開く必要がありません\n- 毎日の自然な行動をトリガーにニュースを再生できます\n\n偏りのない広範囲な検索:\n- AIが国内外の信頼性が高いニュースサイトから技術情報を収集します\n- 偏りなく業界全体の動向を把握することができます\n\n重要なニュースの選択:\n- AIが検索結果の中から特に重要なニュースを選択します\n- 例: 複数の記事で取り上げられたテーマや大手企業の新リリースなど\n\nノイズの排除と効率化:\n- AIが複数の情報ソースを統合し、重複を省いた簡潔なニュースを作成します\n\n## 使い方\n\n1. ニュースの再生\nスキルを起動すると最新の技術関連ニュースを再生します。\n例: 「アレクサ、テックキュレーターを開いて」\n例: 「ニュースを再生」\n\n2. 技術トレンドに関する質問\n最新の記事を検索して質問に回答します。\n例: 「質問、AIエージェント関連のニュースはありますか？」\n例: 「回答を再生」",
           "examplePhrases": [
             "アレクサ、テックキュレーターを開いて",
-            "生成AIをフォローテック、AIエージェント関連のニュースはありますか?",
-            ""
+            "質問、AIエージェント関連のニュースはありますか？"
           ],
           "keywords": [
             "ニュース",
@@ -95,10 +93,10 @@
             "技術動向",
             "情報収集"
           ],
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/cd48/777fc8f993644fe0ab033c6ea16f3529/APP_ICON_LARGE?versionId=tRUbNVGpS3Ds73I1ByrL32JsIItYzF2Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250126T120232Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604798&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=b830c14c01fd154e0f6f7392260f66efbb9b06e9a3a1ff00c5aef2e6490a8b85",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/cd48/777fc8f993644fe0ab033c6ea16f3529/APP_ICON_LARGE?versionId=tRUbNVGpS3Ds73I1ByrL32JsIItYzF2Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250201T214529Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=4e4e5df54ad4e42c6d36acadfcd48c5d1e91d075544f078e7b29a0d01bf930cc",
           "name": "テックキュレーター",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/967f/a06fb2791f75496b8ee8d061e73c912e/APP_ICON?versionId=avq5X184OnHPMCGn45yA2nM4sCXSCIU7&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250126T120232Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=bf472d0e8319c5254f6e77a82de6e56dec000dc39733a9e97c9a51de5342bf6a",
-          "summary": "tech-curatorは、怠惰なエンジニア向けに開発された技術トレンドのキャッチアップスキルです。登録したトピックに関連する技術トレンドを自動で収集し、あなたのAlexaデバイスにお届けします。"
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/967f/a06fb2791f75496b8ee8d061e73c912e/APP_ICON?versionId=avq5X184OnHPMCGn45yA2nM4sCXSCIU7&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250201T214529Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604799&X-Amz-Credential=AKIAWBV6LQ4QB4GCVE2A%2F20250201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=1215a6b19834e981bcc827122d5d6437e8053d679a7f2cabe9f9f196cad5f5e8",
+          "summary": "tech-curatorは、怠惰なエンジニア向けに開発された技術トレンドのキャッチアップスキルです。最新の技術トレンドを自動で収集し、あなたのAlexaデバイスにお届けします。"
         }
       },
       "testingInstructions": "{\"ask_dist_username\":\"\",\"ask_dist_password\":\"\",\"ask_dist_testing_instructions\":\"Sample Testing Instructions.\"}"
